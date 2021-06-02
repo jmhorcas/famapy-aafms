@@ -1,0 +1,31 @@
+.ver DDDMP-2.0
+.mode A
+.varinfo 3
+.nnodes 17
+.nvars 12
+.nsuppvars 12
+.suppvarnames Pizza Normal Size Big Topping Dough CheesyCrust Salami Ham Mozzarella Neapolitan Sicilian
+.orderedvarnames Pizza Normal Size Big Topping Dough CheesyCrust Salami Ham Mozzarella Neapolitan Sicilian
+.ids 0 1 2 3 4 5 6 7 8 9 10 11
+.permids 0 1 2 3 4 5 6 7 8 9 10 11
+.nroots 1
+.rootids -17
+.nodes
+1 T 1 0 0
+2 Sicilian 11 1 -1
+3 Neapolitan 10 2 -2
+4 Mozzarella 9 3 1
+5 Ham 8 3 4
+6 Salami 7 3 5
+7 CheesyCrust 6 1 6
+8 Dough 5 7 1
+9 Topping 4 8 1
+10 Big 3 1 9
+11 Size 2 10 1
+12 Dough 5 6 1
+13 Topping 4 12 1
+14 Big 3 13 1
+15 Size 2 14 1
+16 Normal 1 11 15
+17 Pizza 0 16 1
+.end

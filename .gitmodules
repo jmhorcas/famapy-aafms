@@ -1,0 +1,3 @@
+[submodule "BDDSampler"]
+	path = BDDSampler
+	url = https://github.com/davidfa71/BDDSampler.git
