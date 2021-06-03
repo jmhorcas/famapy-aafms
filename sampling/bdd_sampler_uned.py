@@ -87,7 +87,7 @@ class BDDSamplerUNED(FMSampling):
 
     def sample(self, size: int) -> list[FMConfiguration]:
         # Execute the BDDSampler @ UNED
-        command = subprocess.run([BDDSamplerUNED.BDDSAMPLER_EXE, str(size), self._bdd_dumpfile_name], capture_output=True, cwd=BDDSamplerUNED.BDDSAMPLER_DIR)
+        command = subprocess.run([BDDSamplerUNED.BDDSAMPLER_EXE, '-norep', str(size), self._bdd_dumpfile_name], capture_output=True, cwd=BDDSamplerUNED.BDDSAMPLER_DIR)
         result = command.stdout
         
         # Parse the results

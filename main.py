@@ -104,6 +104,15 @@ def main2():
     for c in stats:
         print(f"{c}: {stats[c]}")
 
+    stats = defaultdict(int)
+    M = 10
+    configurations = sampler.sample(M)
+    for c in configurations:
+        stats[c] += 1
+
+    for c in stats:
+        print(f"{c}: {stats[c]}")
+        
     sampler.delete()
 
 def main3():
