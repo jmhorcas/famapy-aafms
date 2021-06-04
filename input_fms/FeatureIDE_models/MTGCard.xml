@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<featureModel>
+	<properties>
+		<graphics key="legendautolayout" value="true"/>
+		<graphics key="showshortnames" value="false"/>
+		<graphics key="layout" value="horizontal"/>
+		<graphics key="showcollapsedconstraints" value="true"/>
+		<graphics key="legendhidden" value="false"/>
+		<graphics key="layoutalgorithm" value="1"/>
+	</properties>
+	<struct>
+		<and abstract="true" mandatory="true" name="MTGCard">
+			<feature mandatory="true" name="Name"/>
+			<and name="ManaCost">
+				<feature name="ManaSymbols"/>
+			</and>
+			<alt mandatory="true" name="Color">
+				<feature name="Colorless"/>
+				<or name="Colors">
+					<feature name="White"/>
+					<feature name="Blue"/>
+					<feature name="Black"/>
+					<feature name="Red"/>
+					<feature name="Green"/>
+				</or>
+			</alt>
+			<feature mandatory="true" name="Illustration"/>
+			<and mandatory="true" name="TypeLine">
+				<feature mandatory="true" name="CardType"/>
+				<feature name="CardSubtype"/>
+			</and>
+			<and mandatory="true" name="TextBox">
+				<feature name="RulesText"/>
+				<feature name="FlavorText"/>
+			</and>
+			<and name="PowerToughness">
+				<feature name="Power"/>
+				<feature name="Toughness"/>
+			</and>
+			<and name="InformationBelowTextBox">
+				<feature name="IllustrationCredit"/>
+			</and>
+		</and>
+	</struct>
+</featureModel>
