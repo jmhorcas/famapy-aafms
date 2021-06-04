@@ -11,5 +11,5 @@ class Sampling():
         pass
 
     @abstractmethod
-    def sample(self, size: int) -> set[Configuration]:
+    def sample(self, size: int, with_replacement: bool=False) -> set[Configuration]:
         pass    

@@ -13,5 +13,5 @@ class FMSampling(Sampling):
         pass
 
     @abstractmethod
-    def sample(self, size: int) -> set[FMConfiguration]:
+    def sample(self, size: int, with_replacement: bool=False) -> set[FMConfiguration]:
         pass    

@@ -28,10 +28,12 @@ class FMPySATSampling(FMSampling):
         
         self.aafm = AAFMsHelper(self.feature_model, cnf_model)
 
-    def sample(self, size: int) -> set[FMConfiguration]:
+    def sample(self, size: int, with_replacement: bool=False) -> set[FMConfiguration]:
         if self.configurations is None:
             self.configurations = self.aafm.get_configurations()
-        return random.sample(self.configurations, size)
+        if with_replacement:
+            return random.choices(self.configurations, k=size)
+        return random.sample(self.configurations, k=size)
 
     def delete(self):
         del self.configurations

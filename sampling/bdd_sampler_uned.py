@@ -85,9 +85,12 @@ class BDDSamplerUNED(FMSampling):
         if os.path.exists(BDDSamplerUNED.BDDSAMPLER_DIR + self._bdd_dumpfile_name):
             os.remove(BDDSamplerUNED.BDDSAMPLER_DIR + self._bdd_dumpfile_name)
 
-    def sample(self, size: int) -> list[FMConfiguration]:
+    def sample(self, size: int, with_replacement: bool=False) -> list[FMConfiguration]:
         # Execute the BDDSampler @ UNED
-        command = subprocess.run([BDDSamplerUNED.BDDSAMPLER_EXE, '-norep', str(size), self._bdd_dumpfile_name], capture_output=True, cwd=BDDSamplerUNED.BDDSAMPLER_DIR)
+        if with_replacement:
+            command = subprocess.run([BDDSamplerUNED.BDDSAMPLER_EXE, str(size), self._bdd_dumpfile_name], capture_output=True, cwd=BDDSamplerUNED.BDDSAMPLER_DIR)
+        else:
+            command = subprocess.run([BDDSamplerUNED.BDDSAMPLER_EXE, '-norep', str(size), self._bdd_dumpfile_name], capture_output=True, cwd=BDDSamplerUNED.BDDSAMPLER_DIR)
         result = command.stdout
         
         # Parse the results
