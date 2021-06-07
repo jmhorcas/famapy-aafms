@@ -8,9 +8,12 @@ from famapy.metamodels.pysat_metamodel.operations.glucose3_products import Gluco
 from sampling.bdd_sampler_uned import BDDSamplerUNED
 from sampling.fm_pysat_sampler import FMPySATSampling
 
+from famapy.metamodels.fm_metamodel.models.fm_configuration import FMConfiguration
 from famapy.metamodels.fm_metamodel.transformations.featureide_parser import FeatureIDEParser
 
 from famapy.metamodels.pysat_metamodel.utils.aafms_helper import AAFMsHelper
+
+from famapy.metamodels.bdd_metamodel.utils.bdd_helper import BDDHelper
 
 INPUT_FMS = 'input_fms/'
 PIZZA_FM = INPUT_FMS + 'pizza.xml'
@@ -136,8 +139,32 @@ def main3():
         print(f"{i}: {stats[c]/N*100}")
 
 
+def main4():
+    fide_parser = FeatureIDEParser(PIZZA_FM, no_read_constraints=True)
+    fm = fide_parser.transform()
+
+    cnf_reader = CNFReader(PIZZA_FM_CNF_LOGIC)
+    cnf_model = cnf_reader.transform()
+    cnf_formula = cnf_reader.get_cnf_formula(cnf_output_syntax=CNFNotation.JAVA)
+
+    bdd_helper = BDDHelper(feature_model=fm, cnf_filepath=PIZZA_FM_CNF_LOGIC)
+    configs = bdd_helper.get_configurations()
+    configs = set(configs)
+    for i, c in enumerate(configs):
+        print(f'{i}: {c}')
+
+    print(f'#Configs: {bdd_helper.get_number_of_configurations()}')
+
+    p_config = {'Pizza': True, 'Normal': True}
+    elements = {fm.get_feature_by_name(f): s for f, s in p_config.items()}
+    configs = bdd_helper.get_configurations(partial_configuration=FMConfiguration(elements))
+    configs = set(configs)
+    for i, c in enumerate(configs):
+        print(f'{i}: {c}')
+    print(f'#Configs2: {bdd_helper.get_number_of_configurations(partial_configuration=FMConfiguration(elements))}')
 
 if __name__ == "__main__":
     #main()
-    main2()
+    #main2()
     #main3()
+    main4()
