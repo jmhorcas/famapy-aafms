@@ -41,7 +41,8 @@ class CNFReader(TextToModel):
             (A) & (-B | C) & ...
     
     This class is able to read any of these notations, but only one notation,
-    so the .txt file should be modified to include only one of those notations by removing the others.
+    so the .txt file should be modified to include only one of those notations by removing the others,
+    leaving out only one line with the CNF formula in the file.
     """
 
     @staticmethod
