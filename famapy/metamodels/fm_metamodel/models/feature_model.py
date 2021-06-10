@@ -2,7 +2,7 @@ from functools import total_ordering
 from ast import AST
 from typing import Sequence
 
-from famapy.core.models import VariabilityModel
+from famapy.core.models import VariabilityModel, AST
 from famapy.core.exceptions import ElementNotFound
 
 class Relation:
@@ -70,7 +70,7 @@ class Feature:
     def __lt__(self, other):
         return self.name < other.name
 
-class Constraint:
+class BasicConstraint:
     #This is heavily limited. Currently this will only support requires and excludes
     def __init__(self, name: str, origin:'Feature', destination:'Feature', ctc_type:str):
         self.name = name
@@ -81,8 +81,20 @@ class Constraint:
     def __hash__(self) -> int:
         return hash((self.origin, self.destination, self.ctc_type))
 
-    def __eq__(self, other: 'Constraint') -> bool:
+    def __eq__(self, other: 'BasicConstraint') -> bool:
         return self.origin == other.origin and self.destination == other.destination and self.ctc_type == other.ctc_type
+
+class Constraint:
+    #This is heavily limited. Currently this will only support requires and excludes
+    def __init__(self, name: str, ast: AST):
+        self.name = name
+        self.ast = ast
+
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __eq__(self, other: 'Constraint') -> bool:
+        return self.name == other.name
 
 class FeatureModel(VariabilityModel):
 
