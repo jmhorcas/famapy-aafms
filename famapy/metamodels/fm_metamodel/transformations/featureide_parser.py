@@ -55,9 +55,8 @@ class FeatureIDEParser(TextToModel):
                 features = [root_feature] + features
                 fm = FeatureModel(root_feature, [], features, relations)
             elif child.tag == FeatureIDEParser.TAG_CONSTRAINTS:
-                if not self._no_read_constraints:
-                    constraints = self._read_constraints(child, fm)
-                    fm.ctcs.extend(constraints)
+                constraints = self._read_constraints(child, fm)
+                fm.ctcs.extend(constraints)
         return fm
 
     def _read_features(self, root_tree, parent: Feature) -> tuple[list[Feature], list[Relation]]:
