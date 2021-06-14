@@ -1,16 +1,13 @@
 from famapy.metamodels.fm_metamodel.models import FeatureModel, Feature
 
+
 def is_mandatory(feature: Feature) -> bool:
-    parent = feature.get_parent()
-    if not parent:
-        return True
-    return any(r.is_mandatory() and r.children[0] == feature for r in parent.get_relations())
+    """A feature is mandatory if it is the root or its parent has a mandatory relation with the feature."""
+    return feature.get_parent() is None or any(r.is_mandatory() and r.children[0] == feature for r in feature.get_parent().get_relations())
 
 def is_optional(feature: Feature) -> bool:
-    parent = feature.get_parent()
-    if not parent:
-        return False
-    return any(r.is_optional() and r.children[0] == feature for r in parent.get_relations())
+    """A feature is optional if it is not the root and its parent has an optional relation with the feature."""
+    return feature.get_parent() is not None and any(r.is_optional() and r.children[0] == feature for r in feature.get_parent().get_relations())
 
 def is_or_group(feature: Feature) -> bool:
     return any(r.is_or() for r in feature.get_relations())
@@ -30,12 +27,10 @@ def select_parent_features(feature: Feature) -> list[Feature]:
     return features
 
 def average_branching_factor(feature_model: FeatureModel, precision: int=2) -> float:
-    features = feature_model.get_features()
-    childrens = 0
-    for feat in features:
-        for relation in feat.get_relations():
-            childrens += len(relation.children)
-    return round(childrens / len(features), precision)
+    return round(sum(sum(len(r.children) for r in f.get_relations()) for f in feature_model.get_features()) / len(feature_model.get_features()), precision)
+
+def max_depth_tree(feature_model: FeatureModel) -> int:
+    return max(len(select_parent_features(f)) for f in leaf_features(feature_model))
 
 def core_features(feature_model: FeatureModel) -> list[Feature]:
     if not feature_model.root:
@@ -56,3 +51,4 @@ def leaf_features(feature_model: FeatureModel) -> list[Feature]:
 
 def count_leaf_features(feature_model: FeatureModel) -> int:
     return sum(len(f.get_relations()) == 0 for f in feature_model.get_features())
+

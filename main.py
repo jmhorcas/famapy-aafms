@@ -183,9 +183,10 @@ def main_fide():
     print(f'#Alternative-groups: {sum(fm_utils.is_alternative_group(f) for f in fm.get_features())}')
     print(f'#Or-groups: {sum(fm_utils.is_or_group(f) for f in fm.get_features())}')
     print(f'#Core features: {len(fm_utils.core_features(fm))}')
-    print(f'#Leaf features:: {len(fm_utils.leaf_features(fm))}')
+    print(f'#Leaf features: {len(fm_utils.leaf_features(fm))}')
     #print(f'#Leaf features:: {fm_utils.count_leaf_features(fm)}')
     print(f'Branching factor: {fm_utils.average_branching_factor(fm)}')
+    print(f'Max depth tree: {fm_utils.max_depth_tree(fm)}')
     
 
 if __name__ == "__main__":
