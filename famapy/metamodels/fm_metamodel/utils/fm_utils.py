@@ -9,7 +9,7 @@ def is_mandatory(feature: Feature) -> bool:
 def is_optional(feature: Feature) -> bool:
     parent = feature.get_parent()
     if not parent:
-        return True
+        return False
     return any(r.is_optional() and r.children[0] == feature for r in parent.get_relations())
 
 def is_or_group(feature: Feature) -> bool:
