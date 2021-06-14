@@ -10,13 +10,17 @@ from sampling.fm_pysat_sampler import FMPySATSampling
 
 from famapy.metamodels.fm_metamodel.models.fm_configuration import FMConfiguration
 from famapy.metamodels.fm_metamodel.transformations.featureide_parser import FeatureIDEParser
+from famapy.metamodels.fm_metamodel.utils import fm_utils
 
 from famapy.metamodels.pysat_metamodel.utils.aafms_helper import AAFMsHelper
 
 from famapy.metamodels.bdd_metamodel.utils.bdd_helper import BDDHelper
 
-INPUT_FMS = 'input_fms/'
+
+
+INPUT_FMS = 'input_fms/FeatureIDE_models/'
 PIZZA_FM = INPUT_FMS + 'pizza.xml'
+JHIPSTER_FM = INPUT_FMS + 'jHipster.xml'
 PIZZA_FM_CNF_SHORT = INPUT_FMS + 'pizza_cnf_short.txt'
 PIZZA_FM_CNF_JAVA = INPUT_FMS + 'pizza_cnf_java.txt'
 PIZZA_FM_CNF_LOGIC = INPUT_FMS + 'pizza_cnf_logic.txt'
@@ -148,23 +152,45 @@ def main4():
     cnf_formula = cnf_reader.get_cnf_formula(cnf_output_syntax=CNFNotation.JAVA)
 
     bdd_helper = BDDHelper(feature_model=fm, cnf_filepath=PIZZA_FM_CNF_LOGIC)
-    configs = bdd_helper.get_configurations()
-    configs = set(configs)
-    for i, c in enumerate(configs):
-        print(f'{i}: {c}')
+    # configs = bdd_helper.get_configurations()
+    # configs = set(configs)
+    # for i, c in enumerate(configs):
+    #     print(f'{i}: {c}')
 
-    print(f'#Configs: {bdd_helper.get_number_of_configurations()}')
+    # print(f'#Configs: {bdd_helper.get_number_of_configurations()}')
 
-    p_config = {'Pizza': True, 'Normal': True}
+    p_config = {'Pizza': True, 'Big': True}
     elements = {fm.get_feature_by_name(f): s for f, s in p_config.items()}
-    configs = bdd_helper.get_configurations(partial_configuration=FMConfiguration(elements))
-    configs = set(configs)
-    for i, c in enumerate(configs):
-        print(f'{i}: {c}')
+    # configs = bdd_helper.get_configurations(partial_configuration=FMConfiguration(elements))
+    # configs = set(configs)
+    # for i, c in enumerate(configs):
+    #     print(f'{i}: {c}')
     print(f'#Configs2: {bdd_helper.get_number_of_configurations(partial_configuration=FMConfiguration(elements))}')
+    print(f'#Configs2: {bdd_helper.get_number_of_configurations(partial_configuration=FMConfiguration(elements))}')
+    print(f'#Configs2: {bdd_helper.get_number_of_configurations(partial_configuration=FMConfiguration(elements))}')
+
+def main_fide():
+    fide_parser = FeatureIDEParser(JHIPSTER_FM)
+    fm = fide_parser.transform()
+
+    print(f'#Features: {len(fm.get_features())}')
+    print(f'#Constraints: {len(fm.get_constraints())}')
+    print(f'Root: {fm.root}')
+    print(f'#Abstract features: {sum(f.is_abstract for f in fm.get_features())}')
+    print(f'#Mandatory features: {sum(fm_utils.is_mandatory(f) for f in fm.get_features())}')
+    print(f'#Optional features: {sum(fm_utils.is_optional(f) for f in fm.get_features())}')
+    print(f'#Groups: {sum(fm_utils.is_group(f) for f in fm.get_features())}')
+    print(f'#Alternative-groups: {sum(fm_utils.is_alternative_group(f) for f in fm.get_features())}')
+    print(f'#Or-groups: {sum(fm_utils.is_or_group(f) for f in fm.get_features())}')
+    print(f'#Core features: {len(fm_utils.core_features(fm))}')
+    print(f'#Leaf features:: {len(fm_utils.leaf_features(fm))}')
+    #print(f'#Leaf features:: {fm_utils.count_leaf_features(fm)}')
+    print(f'Branching factor: {fm_utils.average_branching_factor(fm)}')
+    
 
 if __name__ == "__main__":
     #main()
     #main2()
     #main3()
-    main4()
+    #main4()
+    main_fide()
