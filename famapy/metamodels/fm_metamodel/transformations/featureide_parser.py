@@ -49,7 +49,10 @@ class FeatureIDEParser(TextToModel):
         for child in root:
             if child.tag == FeatureIDEParser.TAG_STRUCT:
                 root = child[0]
-                root_feature = Feature(name=root.attrib[FeatureIDEParser.ATTRIB_NAME], relations=[], parent=None)
+                is_abstract = False 
+                if FeatureIDEParser.ATTRIB_ABSTRACT in root.attrib and root.attrib[FeatureIDEParser.ATTRIB_ABSTRACT]:
+                    is_abstract = True
+                root_feature = Feature(name=root.attrib[FeatureIDEParser.ATTRIB_NAME], relations=[], parent=None, is_abstract=is_abstract)
                 #root_feature.add_relation(Relation(parent=None, children=[], card_min=0, card_max=0))   # Relation for the parent.
                 (features, children, relations) = self._read_features(root, root_feature)
                 features = [root_feature] + features
