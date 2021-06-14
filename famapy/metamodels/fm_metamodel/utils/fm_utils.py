@@ -27,7 +27,16 @@ def select_parent_features(feature: Feature) -> list[Feature]:
     return features
 
 def average_branching_factor(feature_model: FeatureModel, precision: int=2) -> float:
-    return round(sum(sum(len(r.children) for r in f.get_relations()) for f in feature_model.get_features()) / len(feature_model.get_features()), precision)
+    nof_branches = 0
+    nof_children = 0
+    for feature in feature_model.get_features():
+        if feature.get_relations():
+            nof_branches += 1
+            nof_children += sum(len(r.children) for r in feature.get_relations())
+    return round(nof_children / nof_branches, precision)
+
+    # nof_childrens = sum(sum(len(r.children) for r in f.get_relations()) for f in feature_model.get_features())
+    # return round(nof_childrens / len(feature_model.get_features()), precision)
 
 def max_depth_tree(feature_model: FeatureModel) -> int:
     return max(len(select_parent_features(f)) for f in leaf_features(feature_model))
