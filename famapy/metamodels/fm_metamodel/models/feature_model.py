@@ -59,7 +59,7 @@ class Feature:
         return self.parent
 
     def __str__(self):
-        return self.name # if not self.is_abstract else self.name + " (abstract)"
+        return self.name
 
     def __hash__(self) -> int:
         return hash(self.name)
@@ -71,7 +71,6 @@ class Feature:
         return self.name < other.name
 
 class BasicConstraint:
-    #This is heavily limited. Currently this will only support requires and excludes
     def __init__(self, name: str, origin:'Feature', destination:'Feature', ctc_type:str):
         self.name = name
         self.origin = origin
@@ -85,7 +84,6 @@ class BasicConstraint:
         return self.origin == other.origin and self.destination == other.destination and self.ctc_type == other.ctc_type
 
 class Constraint:
-    #This is heavily limited. Currently this will only support requires and excludes
     def __init__(self, name: str, ast: AST):
         self.name = name
         self.ast = ast
@@ -115,7 +113,8 @@ class FeatureModel(VariabilityModel):
 
     def get_relations(self, feature=None):
         if not self.root:   # Empty feature model
-            return []
+            self.relations = []
+            return self.relations
 
         if not self.relations:
             relations = []
@@ -130,7 +129,8 @@ class FeatureModel(VariabilityModel):
 
     def get_features(self):
         if not self.root:   # Empty feature model
-            return []
+            self.features = []
+            return self.features
 
         if not self.features:
             features = []
