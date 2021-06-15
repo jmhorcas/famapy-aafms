@@ -1,12 +1,17 @@
 from collections import defaultdict
+from famapy.metamodels.bdd_metamodel.utils.bdd_helper import BDDHelper
+from famapy.metamodels.bdd_metamodel.transformations.cnf_to_bdd import CNFToBDD
+from famapy.metamodels.pysat_metamodel.transformations.cnf_to_pysat import CNFToPysat
 from famapy.metamodels.pysat_metamodel.utils.aafms_helper import AAFMsHelper
 
-from famapy.metamodels.pysat_metamodel.transformations.cnf_to_pysat import CNFReader, CNFNotation
+from famapy.metamodels.cnf_metamodel.models.cnf_model import CNFNotation
+from famapy.metamodels.cnf_metamodel.transformations.cnf_reader import CNFReader
+from famapy.metamodels.cnf_metamodel.transformations.cnf_writer import CNFWriter
 
 from famapy.metamodels.pysat_metamodel.operations.glucose3_products import Glucose3Products
 
-from sampling.bdd_sampler_uned import BDDSamplerUNED
-from sampling.fm_pysat_sampler import FMPySATSampling
+#from sampling.bdd_sampler_uned import BDDSamplerUNED
+#from sampling.fm_pysat_sampler import FMPySATSampling
 
 from famapy.metamodels.fm_metamodel.models.fm_configuration import FMConfiguration
 from famapy.metamodels.fm_metamodel.transformations.featureide_parser import FeatureIDEParser
@@ -14,17 +19,21 @@ from famapy.metamodels.fm_metamodel.utils import fm_utils
 
 from famapy.metamodels.pysat_metamodel.utils.aafms_helper import AAFMsHelper
 
-from famapy.metamodels.bdd_metamodel.utils.bdd_helper import BDDHelper
+#from famapy.metamodels.bdd_metamodel.utils.bdd_helper import BDDHelper
 
+from famapy.metamodels.pysat_metamodel.transformations.fm_to_pysat import FmToPysat
 
 
 INPUT_FMS = 'input_fms/FeatureIDE_models/'
-PIZZA_FM = INPUT_FMS + 'pizza.xml'
+INPUT_CNFS = 'input_fms/cnf_models/'
+PIZZA_FM = INPUT_FMS + 'pizzas.xml'
+PIZZA_NOCTCS_FM = INPUT_FMS + 'pizzas_noCTCs.xml'
 JHIPSTER_FM = INPUT_FMS + 'jHipster.xml'
-PIZZA_FM_CNF_SHORT = INPUT_FMS + 'pizza_cnf_short.txt'
-PIZZA_FM_CNF_JAVA = INPUT_FMS + 'pizza_cnf_java.txt'
-PIZZA_FM_CNF_LOGIC = INPUT_FMS + 'pizza_cnf_logic.txt'
-PIZZA_FM_CNF_TEXTUAL = INPUT_FMS + 'pizza_cnf_textual.txt'
+WEAFQAS_FM = INPUT_FMS + 'WeaFQAs.xml'
+PIZZA_FM_CNF_SHORT = INPUT_CNFS + 'pizza_cnf_short.txt'
+PIZZA_FM_CNF_JAVA = INPUT_CNFS + 'pizza_cnf_java.txt'
+PIZZA_FM_CNF_LOGIC = INPUT_CNFS + 'pizza_cnf_logic.txt'
+PIZZA_FM_CNF_TEXTUAL = INPUT_CNFS + 'pizza_cnf_textual.txt'
 
 
 
@@ -170,9 +179,13 @@ def main4():
     print(f'#Configs2: {bdd_helper.get_number_of_configurations(partial_configuration=FMConfiguration(elements))}')
 
 def main_fide():
-    fide_parser = FeatureIDEParser(JHIPSTER_FM)
-    fm = fide_parser.transform()
+    fm = FeatureIDEParser(PIZZA_NOCTCS_FM).transform()
+    pysat_model = FmToPysat(fm).transform()
+    print(f'Variables: {pysat_model.variables}')
+    print(f'CNF: {pysat_model.cnf}')
 
+
+    print('==========Metrics==========')
     print(f'#Features: {len(fm.get_features())}')
     print(f'#Constraints: {len(fm.get_constraints())}')
     print(f'Root: {fm.root}')
@@ -188,10 +201,43 @@ def main_fide():
     print(f'Branching factor: {fm_utils.average_branching_factor(fm)}')
     print(f'Max depth tree: {fm_utils.max_depth_tree(fm)}')
     
+def main_cnf():
+    fm = FeatureIDEParser(PIZZA_FM).transform() 
+
+    cnf_model = CNFReader(PIZZA_FM_CNF_JAVA).transform()
+    print(f'CNF notation: {cnf_model.get_cnf_notation()}')
+    print(f'CNF formula: {cnf_model.get_cnf_formula(cnf_model.get_cnf_notation())}')
+    print(f'Features: {cnf_model.get_variables()}')
+
+    cnf_writer = CNFWriter('prueba.txt', cnf_model)
+    cnf_writer.set_notation(CNFNotation.SHORT)
+    cnf_writer.transform()
+
+    bdd_model = CNFToBDD(cnf_model).transform()
+    bdd_helper = BDDHelper(fm, bdd_model)
+    
+    configs = bdd_helper.get_configurations()
+    print(f'#Configs: {len(configs)}')
+
+    p_config = {'Pizza': True, 'Normal': True}
+    elements = {fm.get_feature_by_name(f): s for f, s in p_config.items()}
+    fm_config = FMConfiguration(elements)
+    configs = bdd_helper.get_configurations(fm_config)
+    print(f'#Configs: {len(configs)}')
+
+    configs = bdd_helper.get_configurations()
+    print(f'#Configs: {len(configs)}')
+
+    p_config = {'Pizza': True, 'Big': True}
+    elements = {fm.get_feature_by_name(f): s for f, s in p_config.items()}
+    fm_config = FMConfiguration(elements)
+    configs = bdd_helper.get_configurations(fm_config)
+    print(f'#Configs: {len(configs)}')
 
 if __name__ == "__main__":
     #main()
     #main2()
     #main3()
     #main4()
-    main_fide()
+    #main_fide()
+    main_cnf()
