@@ -234,10 +234,75 @@ def main_cnf():
     configs = bdd_helper.get_configurations(fm_config)
     print(f'#Configs: {len(configs)}')
 
+def main_bdd():
+    fm = FeatureIDEParser(PIZZA_FM).transform() 
+    cnf_model = CNFReader(PIZZA_FM_CNF_JAVA).transform()
+    bdd_model = CNFToBDD(cnf_model).transform()
+
+    bdd_helper = BDDHelper(fm, bdd_model)
+
+    print(f'Root: {bdd_model.root}')
+    print(f'node: {bdd_model.root.node}')
+    print(f'bdd: {bdd_model.root.bdd}')
+    print(f'manager: {bdd_model.root.manager}')
+    print(f'level: {bdd_model.root.level}')
+    print(f'len: {len(bdd_model.root)}')
+    print(f'to_expr: {bdd_model.root.to_expr()}')
+    print(f'high: {bdd_model.root.high}')
+    print(f'low: {bdd_model.root.low}')
+    print(f'ref: {bdd_model.root.ref}')
+    print(f'count: {bdd_model.root.count()}')
+    print(f'count all: {bdd_model.root.count(nvars=len(bdd_model.variables))}')
+
+    print(f'variable order: {bdd_model.variable_order}')
+    print(f'root variable: {bdd_model.variable_order[bdd_model.root.level]}')
+
+    values = {bdd_model.variable_order[bdd_model.root.level] : True}
+    v = bdd_model.bdd.let(values, bdd_model.root)
+    print(f'#Count: {v.count()}')
+    print(f'#Count all: {v.count(nvars=len(bdd_model.variables)-len(values))}')
+
+
+    p_config = {'Pizza': True, 'Big': True}
+    elements = {fm.get_feature_by_name(f): s for f, s in p_config.items()}
+    fm_config = FMConfiguration(elements)
+
+    configs = bdd_helper.get_configurations(fm_config)
+    configs = set(configs)
+    for i, c in enumerate(configs):
+        print(f'{i}: {c}')
+    print(f'#configs: {len(configs)}')
+    #help(bdd_model.root)
+
+    nof_configs = bdd_helper.get_number_of_configurations()
+    print(f'#configs: {nof_configs}')
+
+    nof_configs = bdd_helper.get_number_of_configurations(fm_config)
+    print(f'#configs: {nof_configs}')
+
+    # Sampling
+    sample = bdd_helper.get_random_sample_uned(size=10)
+    for i, c in enumerate(sample):
+        print(f'{i}: {c}')
+    print(f'#configs: {len(sample)}')
+
+    ########## Checking uniformity ##########
+    stats = defaultdict(int)
+    N = int(1e4)
+    for i in range(N):
+        configurations = bdd_helper.get_random_sample_uned(size=1)
+        for c in configurations:
+            stats[c] += 1
+
+    for i, c in enumerate(stats):
+        print(f"{i}: {stats[c]/N*100}")
+
+
 if __name__ == "__main__":
     #main()
     #main2()
     #main3()
     #main4()
     #main_fide()
-    main_cnf()
+    #main_cnf()
+    main_bdd()
