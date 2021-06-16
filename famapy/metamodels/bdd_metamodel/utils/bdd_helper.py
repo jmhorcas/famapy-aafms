@@ -48,17 +48,16 @@ class BDDHelper:
             return random.choices(configurations, k=size)
         return random.sample(configurations, k=size)
 
-    def get_random_sample_uned_without_replacement(self, size: int, partial_configuration: FMConfiguration=None) -> set[FMConfiguration]:
+    def get_random_sample_uned_with_replacement(self, size: int, partial_configuration: FMConfiguration=None) -> set[FMConfiguration]:
         """Return a uniform random sample using the UNED BDD-based approach.
         
         This implementation only traverses the BDD once, but it only support sample with replacement.
         """
         if size < 0:
             raise ValueError('Sample is negative.')
-
-        elements = {} if partial_configuration is None else partial_configuration.elements
         
         # Initialize the configurations and values for BDD nodes with already known features
+        elements = {} if partial_configuration is None else partial_configuration.elements
         values = {f.name : selected for f, selected in elements.items()}
         # Set the BDD nodes with the already known features values
         u = self.bdd_model.bdd.let(values, self.bdd_model.root)
@@ -73,7 +72,7 @@ class BDDHelper:
             for i in range(size):
                 values = configurations_values[i]
                 u = configurations_u[i]
-                
+
                 # Number of configurations with the feature selected
                 v_sel = self.bdd_model.bdd.let({feature: True}, u)
                 nof_configs_var_selected = self.bdd_model.bdd.count(v_sel, nvars=n_vars-1)
