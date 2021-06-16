@@ -102,7 +102,7 @@ class FeatureModel(VariabilityModel):
 
     def __init__(self, root: Feature, constraint: Sequence[Constraint]=[], features: Sequence[Feature]=[], relations: Sequence[Relation]=[]):
         self.root = root
-        self.ctcs = constraint  # implementar CTC con AST
+        self.ctcs = constraint
         self.features = features
         self.relations = relations
         if not features:
