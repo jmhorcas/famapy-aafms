@@ -1,4 +1,8 @@
-import random 
+import math
+import random
+import itertools
+from collections import defaultdict
+from typing import TYPE_CHECKING
 
 from famapy.metamodels.fm_metamodel.models.fm_configuration import FMConfiguration
 from famapy.metamodels.fm_metamodel.models.feature_model import FeatureModel
@@ -138,3 +142,91 @@ class BDDHelper:
                 
             n_vars -= 1
         return FMConfiguration(elements)
+
+    
+    # def product_distribution(self) -> dict[int, float]:
+    #     distribution = defaultdict(float)
+    #     for k in range(0, len(self.bdd_model.variables)+1, 1):
+    #         for v in itertools.combinations(self.bdd_model.variables, k):
+    #             selected_features = {f : True for f in v}
+    #             unselected_features = {f : False for f in self.bdd_model.variables if f not in v}
+                
+    #             values = selected_features | unselected_features
+    #             u = self.bdd_model.bdd.let(values, self.bdd_model.root)
+    #             n_vars = len(self.bdd_model.variables) - len(values)
+
+    def product_distribution(self) -> list[int]:
+        mark = defaultdict(bool)
+        dist = {-1: [], 1: [1]}
+        self.get_prod_dist(self.bdd_model.root, mark, dist)
+        return dist[self.bdd_model.root.node]
+
+    def get_prod_dist(self, n, mark, dist):
+        print(f'dist: {dist}')
+        mark[n] = not mark[n]
+       
+        if n.var is not None:  # n is non-terminal
+            # Traverse
+            if mark[n] != mark[n.low]:
+                self.get_prod_dist(n.low, mark, dist)
+            
+            # Compute low_dist to account for the removed nodes through low
+            removed_nodes = n.low.level - n.level
+            low_dist = [0] * (removed_nodes+len(dist[n.low.node]))
+            for i in range(removed_nodes+1):
+                for j in range(len(dist[n.low.node])):
+                    low_dist[i+j] = low_dist[i+j] + dist[n.low.node][j] * math.comb(removed_nodes, i)
+
+            # Traverse
+            if mark[n] != mark[n.high]:
+                self.get_prod_dist(n.high, mark, dist)
+            
+            # Compute high_dist to account for the removed nodes through high
+            removed_nodes = n.high.level - n.level
+            high_dist = [0] * (removed_nodes+len(dist[n.high.node]))
+            for i in range(removed_nodes+1):
+                for j in range(len(dist[n.high.node])):
+                    high_dist[i+j] = high_dist[i+j] + dist[n.high.node][j] * math.comb(removed_nodes, i)
+
+            # Combine low and high distributions
+            if len(low_dist) > len(high_dist):
+                dist_length = len(dist[n.low.node])
+                #dist_length = len(low_dist)
+            else:
+                dist_length = len(dist[n.high.node]) + 1
+                #dist_length = len(high_dist) + 1
+            dist[n.node] = [0] * dist_length
+
+            print(f'low_dist = {low_dist}')
+            print(f'dist[n.low.node] = {dist[n.low.node]}')
+            
+            print(f'high_dist = {high_dist}')
+            print(f'dist[n.high.node] = {dist[n.high.node]}')
+
+            print(f'dist[n.node] = {dist[n.node]}')
+
+            for i in range(len(low_dist)):
+                dist[n.node][i] = low_dist[i]
+            for i in range(len(high_dist)):
+                dist[n.node][i+1] = dist[n.node][i+1] + high_dist[i]
+
+    def traverse(self, n):
+        print(f'node: {n.node}')
+        print(f'level: {n.level}')
+        print(f'var: {n.var}')
+        print(f'value: {n is None}') 
+        print(f'low: {n.low}')
+        print(f'high: {n.high}') 
+
+        if n.level == 12:
+            help(n)
+
+        # print(f'var(): {self.var(n)}')
+        # print(f'is_terminal: {self.is_terminal(n)}')
+        # print(f'is_terminal: {n is None}')
+        # print(f'value: {self.is_terminal(n) and n is False}')
+        # print(f'var: {n.var}')
+        print(f'-----------')
+        #print(help(n))
+
+        self.traverse(n.high)

@@ -287,16 +287,27 @@ def main_bdd():
     print(f'#configs: {len(sample)}')
 
     ########## Checking uniformity ##########
-    stats = defaultdict(int)
-    N = int(1e4)
-    for i in range(N):
-        configurations = bdd_helper.get_random_sample_uned(size=1)
-        for c in configurations:
-            stats[c] += 1
+    # stats = defaultdict(int)
+    # N = int(1e4)
+    # for i in range(N):
+    #     configurations = bdd_helper.get_random_sample_uned(size=1)
+    #     for c in configurations:
+    #         stats[c] += 1
 
-    for i, c in enumerate(stats):
-        print(f"{i}: {stats[c]/N*100}")
+    # for i, c in enumerate(stats):
+    #     print(f"{i}: {stats[c]/N*100}")
 
+def main_product_distribution():
+    fm = FeatureIDEParser(PIZZA_FM).transform() 
+    cnf_model = CNFReader(PIZZA_FM_CNF_JAVA).transform()
+    bdd_model = CNFToBDD(cnf_model).transform()
+
+    bdd_helper = BDDHelper(fm, bdd_model)
+
+    #bdd_helper.traverse(bdd_model.root)
+    distribution = bdd_helper.product_distribution()
+    print(f'Distribution: {distribution}')
+    
 
 if __name__ == "__main__":
     #main()
@@ -306,3 +317,4 @@ if __name__ == "__main__":
     #main_fide()
     #main_cnf()
     main_bdd()
+    main_product_distribution()
