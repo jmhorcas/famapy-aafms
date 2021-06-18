@@ -34,6 +34,8 @@ PIZZA_FM_CNF_SHORT = INPUT_CNFS + 'pizza_cnf_short.txt'
 PIZZA_FM_CNF_JAVA = INPUT_CNFS + 'pizza_cnf_java.txt'
 PIZZA_FM_CNF_LOGIC = INPUT_CNFS + 'pizza_cnf_logic.txt'
 PIZZA_FM_CNF_TEXTUAL = INPUT_CNFS + 'pizza_cnf_textual.txt'
+BDD_TEST_FM = INPUT_FMS + 'bdd_test.xml'
+BDD_TEST_CNF = INPUT_CNFS + 'bdd_test_cnf.txt'
 
 
 
@@ -304,9 +306,19 @@ def main_product_distribution():
 
     bdd_helper = BDDHelper(fm, bdd_model)
 
-    #bdd_helper.traverse(bdd_model.root)
+    bdd_model.serialize('bdd.png', 'png')
+
+    #print(f'Variable order: {bdd_model.variable_order}')
+    #print(f'Roots: {bdd_model.bdd.to_nx(bdd_model.reference)}')
+    
+
+    #bdd_helper.bdd_traversing()
+    
+    #help(bdd_model.bdd.reorder)
+    #bdd_model.serialize('bdd.png', 'png')
     distribution = bdd_helper.product_distribution()
     print(f'Distribution: {distribution}')
+    print(f'Variable order: {bdd_model.variable_order}')
     
 
 if __name__ == "__main__":
@@ -316,5 +328,5 @@ if __name__ == "__main__":
     #main4()
     #main_fide()
     #main_cnf()
-    main_bdd()
+    #main_bdd()
     main_product_distribution()
