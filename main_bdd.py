@@ -25,6 +25,8 @@ from famapy.metamodels.pysat_metamodel.transformations.fm_to_pysat import FmToPy
 
 from famapy.metamodels.bdd_metamodel.operations.product_distribution import ProductDistribution
 
+from famapy.metamodels.bdd_metamodel.utils.bdd_sampler import BDDSampler 
+
 
 INPUT_FMS = 'input_fms/FeatureIDE_models/'
 INPUT_CNFS = 'input_fms/cnf_models/'
@@ -92,8 +94,48 @@ def bdd_orderings():
         print(f'Counts: {bdd_helper.get_number_of_configurations()}')
 
 
+def main_bdd_sampler():
+    fm = FeatureIDEParser(PIZZA_FM).transform() 
+    cnf_model = CNFReader(PIZZA_FM_CNF_JAVA).transform()
+    bdd_model = CNFToBDD(cnf_model).transform()
+
+    print(bdd_model.bdd.levels)
     
+    
+    bdd_sampler = BDDSampler(fm, bdd_model)
+
+
+    #prob = bdd_sampler.get_all_node_probabilities()
+    #print(prob)
+    print(f'Vars: {bdd_model.bdd.vars}')
+
+    p_config = {'Pizza': True, 'Big': True}
+    elements = {fm.get_feature_by_name(f): s for f, s in p_config.items()}
+    fm_config = FMConfiguration(elements)
+
+    sample = set()
+    for i in range(100):
+        config = bdd_sampler.generate_random_configuration()
+        sample.add(config)
+    
+    #print(f'Config: {config}')
+    print(f'#configs: {len(sample)}')
+
+def bdd_traverse():
+    fm = FeatureIDEParser(PIZZA_FM).transform() 
+    cnf_model = CNFReader(PIZZA_FM_CNF_JAVA).transform()
+    bdd_model = CNFToBDD(cnf_model).transform()
+
+    bdd_model.traverse()
+
+    bdd_model.serialize('bdd.png')
+    print(f'Computing product distribution:')
+    pd = ProductDistribution().execute(bdd_model)
+    dist = pd.get_result()
+    print(f'PD: {dist}')
 
 if __name__ == "__main__":
-    main()
+    #main()
+    #main_bdd_sampler()
     #bdd_orderings()
+    bdd_traverse()

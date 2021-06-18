@@ -158,75 +158,170 @@ class BDDHelper:
     def product_distribution(self) -> list[int]:
         mark = defaultdict(bool)
         dist = {-1: [], 1: [1]}
-        self.get_prod_dist(self.bdd_model.root, mark, dist)
-        return dist[self.bdd_model.root.node]
+        #self.bdd_model.bdd.collect_garbage()
+        #self.bdd_model.serialize('bdd.png', 'png')
+        root = self.bdd_model.reference
+        solutions = self.bdd_model.bdd.count(root, nvars=len(self.bdd_model.variables))
+        print(f'Solutions: {solutions}')
+        print(f'exp: {self.bdd_model.reference.to_expr()}')
+        self.get_prod_dist(root, mark, dist)
+        return dist[root.node]
+
+    def var(self, n) -> int:
+        """Position of the variable that labels the node n in the ordering.
+        
+        Example: node `n4` is labeled `B`, and `B` is in the second position of the ordering `[A,B,C]`.
+        thus var(n4) = 2.
+        """
+        if n.node == -1 or n.node == 1:
+            return len(self.bdd_model.variables) + 1
+        else:
+            return n.level + 1
 
     def get_prod_dist(self, n, mark, dist):
-        print(f'dist: {dist}')
-        mark[n] = not mark[n]
+        print('***********************************')
+        print(f'get_prod_dist for node: {n.var} (id:{n.node})')
+        try:
+            print(f'dist(n): {dist[n.node]}')
+        except:
+            print(f'dist(n) not calculated yet.')
+
+
+        mark[n.node] = not mark[n.node]
        
         if n.var is not None:  # n is non-terminal
             # Traverse
-            if mark[n] != mark[n.low]:
+            if mark[n.node] != mark[n.low.node]:
                 self.get_prod_dist(n.low, mark, dist)
             
             # Compute low_dist to account for the removed nodes through low
-            removed_nodes = n.low.level - n.level
+            print(f'|--computing low dist for node: {n.var}, var(n)={self.var(n)}')
+            print(f'|--n.low: {n.low.var}, var(n.low)={self.var(n.low)}')
+            removed_nodes = self.var(n.low) - self.var(n) - 1
             low_dist = [0] * (removed_nodes+len(dist[n.low.node]))
             for i in range(removed_nodes+1):
                 for j in range(len(dist[n.low.node])):
                     low_dist[i+j] = low_dist[i+j] + dist[n.low.node][j] * math.comb(removed_nodes, i)
+            print(f'|--low_dist = {low_dist}')
 
             # Traverse
-            if mark[n] != mark[n.high]:
+            if mark[n.node] != mark[n.high.node]:
                 self.get_prod_dist(n.high, mark, dist)
             
             # Compute high_dist to account for the removed nodes through high
-            removed_nodes = n.high.level - n.level
+            print(f'|--computing high dist for node: {n.var}, var(n)={self.var(n)}')
+            print(f'|--n.high: {n.high.var}, var(n.high)={self.var(n.high)}')
+            removed_nodes = self.var(n.high) - self.var(n) - 1
             high_dist = [0] * (removed_nodes+len(dist[n.high.node]))
             for i in range(removed_nodes+1):
                 for j in range(len(dist[n.high.node])):
                     high_dist[i+j] = high_dist[i+j] + dist[n.high.node][j] * math.comb(removed_nodes, i)
-
+            print(f'|--high_dist = {high_dist}')
+           
             # Combine low and high distributions
+            print(f'|--combining low and high distributions: {n.var}, var(n)={self.var(n)}')
             if len(low_dist) > len(high_dist):
-                dist_length = len(dist[n.low.node])
-                #dist_length = len(low_dist)
+                #dist_length = len(dist[n.low.node])
+                dist_length = len(low_dist)
             else:
-                dist_length = len(dist[n.high.node]) + 1
-                #dist_length = len(high_dist) + 1
+                #dist_length = len(dist[n.high.node]) + 1
+                dist_length = len(high_dist) + 1
             dist[n.node] = [0] * dist_length
 
-            print(f'low_dist = {low_dist}')
-            print(f'dist[n.low.node] = {dist[n.low.node]}')
+            print(f'   |--low distribution: {low_dist}, dist(n.low): {dist[n.low.node]}')
+            print(f'   |--high distribution: {high_dist}, dist(n.high): {dist[n.high.node]}')
+            print(f'   |--dist(n): {dist[n.node]}')
             
-            print(f'high_dist = {high_dist}')
-            print(f'dist[n.high.node] = {dist[n.high.node]}')
-
-            print(f'dist[n.node] = {dist[n.node]}')
-
             for i in range(len(low_dist)):
                 dist[n.node][i] = low_dist[i]
             for i in range(len(high_dist)):
                 dist[n.node][i+1] = dist[n.node][i+1] + high_dist[i]
 
-    def traverse(self, n):
+            print(f'      |--combination new dist(n): {dist[n.node]}')
+
+    def bdd_traversing(self):
+        mark = defaultdict(bool)
+        print(f'BDD: {self.bdd_model.bdd}')
+        print(f'vars: {self.bdd_model.bdd.vars}')
+        print(f'expr: {self.bdd_model.bdd.to_expr(self.bdd_model.reference)}')
+        #help(self.bdd_model.bdd)
+        
+        print(f'Root: {self.bdd_model.root}')
+        print('------')
+        for v in self.bdd_model.bdd.vars:
+            print(f'Var: {v}')
+            node = self.bdd_model.bdd.var(v)
+            print(f'Node: {node}')
+            print(f'Dag size: {node.dag_size}')
+            print(f'Support: {self.bdd_model.bdd.support(node)}')
+            
+            #help(node)
+
+            print('------')
+
+        root = self.bdd_model.reference
+
+        self.print_descendants(self.bdd_model.bdd, self.bdd_model.reference, set())
+
+        #root_var = self.bdd_model.bdd.var_at_level(0)
+        #root = self.bdd_model.bdd.var(root_var)
+        #print(f'Traversing the BDD from node: {root.var}')
+        #self.traverse(root, mark)
+
+    def traverse(self, n, mark):
+        print(f'-----------')
+        print(f'n: {n}')
         print(f'node: {n.node}')
         print(f'level: {n.level}')
         print(f'var: {n.var}')
-        print(f'value: {n is None}') 
         print(f'low: {n.low}')
         print(f'high: {n.high}') 
-
-        if n.level == 12:
-            help(n)
-
-        # print(f'var(): {self.var(n)}')
-        # print(f'is_terminal: {self.is_terminal(n)}')
-        # print(f'is_terminal: {n is None}')
-        # print(f'value: {self.is_terminal(n) and n is False}')
-        # print(f'var: {n.var}')
         print(f'-----------')
-        #print(help(n))
+        mark[n.node] = not mark[n.node]
+        if n.var is not None:  # n is non-terminal
+            if mark[n.node] != mark[n.low.node]:
+                self.traverse(n.low, mark)
+            if mark[n.node] != mark[n.high.node]:
+                self.traverse(n.high, mark)            
+    
+    # def feature_inclusion_probability(self):
 
-        self.traverse(n.high)
+    #     def get_node_pr(n):
+    #         mark[n] = not mark[n] 
+    #         if n.var is not None:  # n is non-terminal
+                
+    #             # Explore low
+    #             if n.low.var is None:
+    #                 p[n.low] = p[n.low] + p[n]
+    #             else:
+    #                 p[n.low] = p[n.low] + p[n]/2
+    #             if mark[n] != mark[n.low]:
+    #                 get_node_pr(n.low)
+                
+    #             # Explore high
+    #             if n.high.var is None: 
+    #                 p[n.high] = p[n.high] + p[n] 
+    #             else:
+    #                 p[n.high] = p[n.high] + p[n]/2 
+    #             if mark[n] != mark[n.high]:
+    #                 get_node_pr(n.high)
+
+                 
+    #     def get_joint_pr(n):
+    #         mark[n] = not mark[n]
+    #         if n.var is not None:  # n is non-terminal
+
+    #             # Explore low
+    #             if n.low.node == -1:
+    #                 pass
+        
+    #     mark = defaultdict(bool)
+    #     root = self.bdd_model.root
+    #     print(f'Variable order: {self.bdd_model.variable_order}')
+    #     print(f'Root: {root.var}')
+    #     print(f'Root id: {root.node}')
+    #     p = defaultdict(float)
+    #     p[root] = 1/2
+    #     #get_node_pr(root)
+    #     #get_joint_pr(root)
+    #     #p['formula'] = p[]        

@@ -43,43 +43,46 @@ class ProductDistribution(Operation):
         """
         self.mark = defaultdict(bool)  # boolean mark for every node being either all true or all false.
         self.dist = {-1: [], 1: [1]}  # distribution vectors: `node` -> `list[int]`
-        root = self.bdd_model.reference
+        root = self.bdd_model.root
         self.get_prod_dist(root)
-        return self.dist[root.node]
+        print(f'self.dist: {self.dist}')
+        return self.dist[root.node]        
 
     def get_prod_dist(self, n: Function):
         self.mark[n.node] = not self.mark[n.node]
 
         if not self.is_terminal(n):
             
-            # Traverse
-            if self.mark[n.node] != self.mark[n.low.node]:
-                self.get_prod_dist(n.low)
-            
-            # Compute low_dist to account for the removed nodes through low
-            removed_nodes = self.var(n.low) - self.var(n) - 1
-            low_dist = [0] * (removed_nodes + len(self.dist[n.low.node]))
-            for i in range(removed_nodes+1):
-                for j in range(len(self.dist[n.low.node])):
-                    low_dist[i+j] = low_dist[i+j] + self.dist[n.low.node][j] * math.comb(removed_nodes, i)
+            level, low, high = self.bdd_model.bdd.succ(n)
 
             # Traverse
-            if self.mark[n.node] != self.mark[n.high.node]:
-                self.get_prod_dist(n.high)
+            if self.mark[n.node] != self.mark[low.node]:
+                self.get_prod_dist(low)
+            
+            # Compute low_dist to account for the removed nodes through low
+            removed_nodes = low.level - n.level - 1
+            low_dist = [0] * (removed_nodes + len(self.dist[low.node]))
+            for i in range(removed_nodes+1):
+                for j in range(len(self.dist[low.node])):
+                    low_dist[i+j] = low_dist[i+j] + self.dist[low.node][j] * math.comb(removed_nodes, i)
+
+            # Traverse
+            if self.mark[n.node] != self.mark[high.node]:
+                self.get_prod_dist(high)
             
             # Compute high_dist to account for the removed nodes through high
-            removed_nodes = self.var(n.high) - self.var(n) - 1
-            high_dist = [0] * (removed_nodes + len(self.dist[n.high.node]))
+            removed_nodes = high.level - n.level - 1
+            high_dist = [0] * (removed_nodes + len(self.dist[high.node]))
             for i in range(removed_nodes+1):
-                for j in range(len(self.dist[n.high.node])):
-                    high_dist[i+j] = high_dist[i+j] + self.dist[n.high.node][j] * math.comb(removed_nodes, i)
+                for j in range(len(self.dist[high.node])):
+                    high_dist[i+j] = high_dist[i+j] + self.dist[high.node][j] * math.comb(removed_nodes, i)
 
             # Combine low and high distributions
             if len(low_dist) > len(high_dist):
-                #dist_length = len(self.dist[n.low.node])
+                #dist_length = len(self.dist[low.node])
                 dist_length = len(low_dist)
             else:
-                #dist_length = len(self.dist[n.high.node]) + 1
+                #dist_length = len(self.dist[high.node]) + 1
                 dist_length = len(high_dist) + 1
 
             self.dist[n.node] = [0] * dist_length
@@ -95,9 +98,9 @@ class ProductDistribution(Operation):
         thus var(n4) = 2.
         """
         if n.node == -1 or n.node == 1:  # var(n0) = var(n1) = s + 1, being s the number of variables.
-            return len(self.bdd_model.variables) + 1
+            return len(self.bdd_model.variables)
         else:
-            return n.level + 1
+            return n.level
 
     def is_terminal(self, n: Function) -> bool:
         return n.var is None

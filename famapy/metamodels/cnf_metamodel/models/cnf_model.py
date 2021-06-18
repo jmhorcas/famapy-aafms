@@ -14,6 +14,7 @@ class CNFNotation(Enum):
     """Possible notations of a CNF formula."""
     LOGICAL = {CNFLogicConnective.NOT: '¬', CNFLogicConnective.AND: '∧', CNFLogicConnective.OR: '∨'}
     JAVA = {CNFLogicConnective.NOT: '!', CNFLogicConnective.AND: '&&', CNFLogicConnective.OR: '||'}
+    JAVA_SHORT = {CNFLogicConnective.NOT: '!', CNFLogicConnective.AND: '&', CNFLogicConnective.OR: '|'}
     SHORT = {CNFLogicConnective.NOT: '-', CNFLogicConnective.AND: '&', CNFLogicConnective.OR: '|'}
     TEXTUAL = {CNFLogicConnective.NOT: 'not', CNFLogicConnective.AND: 'and', CNFLogicConnective.OR: 'or'}
 
