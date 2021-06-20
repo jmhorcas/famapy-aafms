@@ -13,10 +13,13 @@ from .valid_product import ValidProduct  # pylint: disable=cyclic-import
 from .variability import Variability  # pylint: disable=cyclic-import
 from .count_leafs import CountLeafs  # pylint: disable=cyclic-import
 from .average_branching_factor import AverageBranchingFactor  # pylint: disable=cyclic-import
+from .product_distribution import ProductDistribution  # pylint: disable=cyclic-import
+from .feature_inclusion_probability import FeatureInclusionProbabilitly  # pylint: disable=cyclic-import
 
 __all__ = [
     "Commonality", "DeadFeatures", "CoreFeatures", "FalseOptionalFeatures",
     "ErrorDetection", "ErrorDiagnosis", "Operation", "Products", "Valid",
     "ValidConfiguration", "ValidProduct", "Variability", "CountLeafs",
-    "AverageBranchingFactor"
+    "AverageBranchingFactor", "ProductDistribution", "FeatureInclusionProbabilitly"
 ]
+

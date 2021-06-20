@@ -18,7 +18,6 @@ class BDDModel:
     def __init__(self):
         self.bdd = BDD()  # BDD manager
         self.cnf_formula = None
-        self.reference = None 
         self.root = None
         self.variables = []
         self.variable_order = {} 
@@ -32,62 +31,38 @@ class BDDModel:
             self.bdd.declare(v)
 
         # Build the BDD
-        self.reference = self.bdd.add_expr(self.cnf_formula)
-        root_var = self.bdd.var_at_level(0)
-        self.root = self.bdd.var(root_var)
-        #self.root = self.reference
-
+        self.root = self.bdd.add_expr(self.cnf_formula)
+        
         # Reorder variables
-        # variable_order = self.bdd.vars 
-        # new_order = sorted(variable_order.keys())
-        # new_variable_order = {v: variable_order[v] for v in new_order} 
+        variable_order = self.bdd.vars 
+        var = self.bdd.var_at_level(0)
+        level = self.root.level
+        variable_order[self.root.var] = 0
+        variable_order[var] = level
+        self.bdd.reorder(variable_order)
 
-        # variable_order = {var: self.bdd.level_of_var(var) for var in self.variables}
-        # var = self.bdd.var_at_level(0)
-        # level = self.reference.level
-        # variable_order[self.reference.var] = 0
-        # variable_order[var] = level
-        # self.bdd.reorder(variable_order)
-        # self.variable_order = {var: self.bdd.level_of_var(var) for var in self.variables}
 
-        # Store the root
-        #self.root = self.get_root()
-        #self.reference = self.root
-
-    # def get_root(self):
-    #     for v in self.bdd.vars:
-    #         node = self.bdd.var(v)
-    #         if node.level == 0:
-    #             return node
-    #     return None
-
+        #self.root = self.bdd.var(self.bdd.var_at_level(0))
+        
     def index(self, n: Function) -> int:
-        """Position of the variable that labels the node `n` in the ordering.
+        """Position of the variable that labels the node `n` in the ordering (i.e., the level).
             
         Example: node `n4` is labeled `B`, and `B` is in the second position of the ordering `[A,B,C]`.
         thus var(n4) = 2.
         """
         if n.node == -1 or n.node == 1:  # index(n0) = index(n1) = s + 1, being s the number of variables.
-            return len(self.bdd.vars)
+            return len(self.bdd.vars) + 1
         else:
-            return n.level
+            return n.level + 1
 
-    def serialize(self, filename: str):
-        """Write BDDs to `filename`.
+    def get_high_node(self, node: Function) -> Function:
+        return ~node.high if node.negated and not self.is_terminal_node(node.high) else node.high
 
-        The format can be:
-        - dddmp v3: `'.dddmp'`
-        - dddmp v2: `'.dddmp2'`
-        - PDF: `'.pdf'`
-        - PNG: `'.png'`
-        - SVG: `'.svg'`
-        """
-        self.bdd.dump(filename=filename, roots=[self.root])
-        #self.bdd.dump(filename=filename)
+    def get_low_node(self, node: Function) -> Function:
+        return ~node.low if node.negated and not self.is_terminal_node(node.low) else node.low
 
-        if format == '.dddmp':
-             # Convert to dddmp format version 3.0 (adding the '.varnames' field)
-            dddmp_v2_to_v3(filename)
+    def is_terminal_node(self, node: Function) -> bool:
+        return node.var is None    
 
     def traverse(self):
         root = self.root
@@ -96,41 +71,23 @@ class BDDModel:
 
     def _traverse(self, n):
         print('-----')
-        print(f'n: {n} ({n.var}) ({n.node}) ({n.level})')
+        print(f'n: {n} (var={n.var}), (level={n.level}), (id={n.node}), (negated={n.negated})')
 
         self.mark[n.node] = not self.mark[n.node]
-        if not self.is_terminal(n):
+        if not self.is_terminal_node(n):
 
-            level, low, high = self.bdd.succ(n)
+            #level, low, high = self.bdd.succ(n)
+            level = n.level
+            low = n.low #self.get_low_node(n)
+            high = n.high #self.get_high_node(n)
             print(f'|--level: {level}')
-            print(f'|--low: {low} ({low.var})')
-            print(f'|--high: {high} ({high.var})')
+            print(f'|--low: {low} (var={low.var}), (level={low.level}), (id={low.node}), (negated={low.negated})')
+            print(f'|--high: {high} (var={high.var}), (level={high.level}), (id={high.node}), (negated={high.negated})')
+            if self.is_terminal_node(low) and low.negated:
+                print(f'negated: {~low}')
             print('-----')
 
             if self.mark[n.node] != self.mark[low.node]:
                 self._traverse(low)
             if self.mark[n.node] != self.mark[high.node]:
                 self._traverse(high)
-
-
-    def is_terminal(self, node: Function) -> bool:
-        return node.var is None    
-
-def dddmp_v2_to_v3(filepath: str):
-    """Convert the file with the BDD dump in format dddmp version 2 to version 3.
-
-    The difference between versions 2.0 and 3.0 is the addition of the '.varnames' field.
-    """
-
-    with open(filepath, 'r') as file:
-        lines = file.readlines()
-        # Change version from 2.0 to 3.0
-        i, line = next((i,l) for i, l in enumerate(lines) if '.ver DDDMP-2.0' in l)
-        lines[i] = line.replace('2.0', '3.0')
-
-        # Add '.varnames' field
-        i, line = next((i,l) for i, l in enumerate(lines) if '.orderedvarnames' in l)
-        lines.insert(i-1, line.replace('.orderedvarnames', '.varnames'))
-
-    with open(filepath, 'w') as file:
-        file.writelines(lines)

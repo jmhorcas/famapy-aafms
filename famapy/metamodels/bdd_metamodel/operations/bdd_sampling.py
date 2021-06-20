@@ -9,24 +9,13 @@ from famapy.metamodels.fm_metamodel.models.feature_model import FeatureModel
 class BDDSampling(Sampling):
     """Uniform Random Sampling (URS) using a Binary Decision Diagram (BDD).
     
-    This is a counting-based sampling inspired in the Knuth algorithm presented in Section 7.1.4 of
-    [Donald E. Knuth. 2009. The Art of Computer Programming, 
-    Volume 4, Fascicle 1: Bitwise Tricks & Techniques; Binary Decision Diagrams. 
-    Addison-Wesley Professional.]
+    This is an adaptation of 
+    [Heradio et al. 2021. 
+    Uniform and Scalable Sampling of Highly Configurable Systems. 
+    Empirical Software Engineering]
+    which relies on counting-based sampling inspired in the original Knuth algorithm.
 
-    Knuth showed how to accomplish uniform random sampling by subsequently partitioning the SAT solution space on variable assignments, 
-    and then counting the number of solutions of the resulting parts. 
-
-    The original algorithm by Knuth is specified on BDDs very efficiently, 
-    as the probabilities required for all the possible SAT solutions are computed just once with a single BDD traversal, 
-    and then reused every time a solution is generated. 
-    Knuth’s algorithm can be also adapted to SAT technology.
-
-    This is an adaptation to support samples with no replacement, therefore,
-    it is not as efficient as the original Knuth’s algorithm because the BDD
-    is traversed for each solution.
-
-    Ref.: Heradio2020 [SPLC] - Uniform and scalable SAT-sampling for configurable systems (https://doi.org/10.1145/3382025.3414951)
+    This implementation supports samples with no replacement as well as samples from a partial configuration.
     """
 
     def __init__(self, size: int, with_replacement: bool=False, partial_configuration: FMConfiguration=None) -> None:

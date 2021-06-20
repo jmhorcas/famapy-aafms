@@ -1,5 +1,6 @@
-from famapy.core.models import VariabilityModel
 from famapy.core.transformations import ModelToModel
+
+from famapy.metamodels.cnf_metamodel.models.cnf_model import CNFModel
 
 from famapy.metamodels.bdd_metamodel.models.bdd_model import BDDModel
 
@@ -14,7 +15,7 @@ class CNFToBDD(ModelToModel):
     def get_destination_extension():
         return 'bdd'
 
-    def __init__(self, source_model: VariabilityModel):
+    def __init__(self, source_model: CNFModel):
         self.source_model = source_model
         self.destination_model = BDDModel()
 

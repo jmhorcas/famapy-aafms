@@ -7,15 +7,17 @@ from famapy.metamodels.cnf_metamodel.models.cnf_model import CNFNotation
 class CNFWriter(ModelToText):
     """Write the CNF formula as a string representing a feature model.
 
-    Four different notations are available:
-        Logical Symbols:
-            (A) ∧ (¬B ∨ C) ∧ ...
-        Textual Symbols:
+    Five different notations are available:
+        Textual Symbols (default):
             (A) and (not B or C) and ...
         Java Symbols:
             (A) && (!B || C) && ...
+        Java Short symbols:
+            (A) & (!B | C) && ...
         Short Symbols:
             (A) & (-B | C) & ...
+        Logical Symbols:
+            (A) ∧ (¬B ∨ C) ∧ ...
     """
 
     @staticmethod
@@ -25,7 +27,7 @@ class CNFWriter(ModelToText):
     def __init__(self, path: str, source_model: VariabilityModel) -> None:
         self._path = path
         self._source_model = source_model
-        self._notation_syntax = CNFNotation.JAVA
+        self._notation_syntax = CNFNotation.TEXTUAL  # Default notation
 
     def set_notation(self, cnf_output_syntax: CNFNotation):
         self._notation_syntax = cnf_output_syntax

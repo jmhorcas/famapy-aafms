@@ -1,4 +1,3 @@
-from collections import defaultdict
 from famapy.metamodels.bdd_metamodel.utils.bdd_helper import BDDHelper
 from famapy.metamodels.bdd_metamodel.transformations.cnf_to_bdd import CNFToBDD
 from famapy.metamodels.pysat_metamodel.transformations.cnf_to_pysat import CNFToPysat
@@ -24,6 +23,7 @@ from famapy.metamodels.pysat_metamodel.utils.aafms_helper import AAFMsHelper
 from famapy.metamodels.pysat_metamodel.transformations.fm_to_pysat import FmToPysat
 
 from famapy.metamodels.bdd_metamodel.operations.product_distribution import ProductDistribution
+from famapy.metamodels.bdd_metamodel.operations import BDDProductDistributionBF, BDDFeatureInclusionProbabilitlyBF
 
 from famapy.metamodels.bdd_metamodel.utils.bdd_sampler import BDDSampler 
 
@@ -123,19 +123,57 @@ def main_bdd_sampler():
 
 def bdd_traverse():
     fm = FeatureIDEParser(PIZZA_FM).transform() 
-    cnf_model = CNFReader(PIZZA_FM_CNF_JAVA).transform()
+    cnf_model = CNFReader(PIZZA_FM_CNF_LOGIC).transform()
     bdd_model = CNFToBDD(cnf_model).transform()
 
     bdd_model.traverse()
 
-    bdd_model.serialize('bdd.png')
+    #bdd_model.serialize('bdd.png')
+    print(f'CNF: {bdd_model.cnf_formula}')
+
+    # root = bdd_model.root 
+    # print(root.negated)
+    # v = ~root 
+    # print(v.negated)
+    # bdd_model.bdd.collect_garbage()
+    # bdd_model.bdd.dump('v.png', roots=[v])
+
+    # print(f'root: {root} (var={root.var}), (level={root.level}), (id={root.node}), (negated={root.negated})')
+    # print(f'root.low: {root.low} (var={root.low.var}), (level={root.low.level}), (id={root.low.node}), (negated={root.low.negated})')
+    # print(f'root.high: {root.high} (var={root.high.var}), (level={root.high.level}), (id={root.high.node}), (negated={root.high.negated})')
+    
+    # level, low, high = bdd_model.bdd.succ(root)
+    # print(f'-----level: {level}')
+    # print(f'root: {root} (var={root.var}), (level={root.level}), (id={root.node}), (negated={root.negated})')
+    # print(f'low: {low} (var={low.var}), (level={low.level}), (id={low.node}), (negated={low.negated})')
+    # print(f'high: {high} (var={high.var}), (level={high.level}), (id={high.node}), (negated={high.negated})')
+
     print(f'Computing product distribution:')
     pd = ProductDistribution().execute(bdd_model)
     dist = pd.get_result()
     print(f'PD: {dist}')
 
+def bdd_product_distribution():
+    fm = FeatureIDEParser(PIZZA_FM).transform() 
+    cnf_model = CNFReader(PIZZA_FM_CNF_LOGIC).transform()
+    bdd_model = CNFToBDD(cnf_model).transform()
+
+    p_config = {'Pizza': True, 'Big': True}
+    elements = {fm.get_feature_by_name(f): s for f, s in p_config.items()}
+    fm_config = FMConfiguration(elements)
+
+    dist = BDDProductDistributionBF(bdd_model, fm_config).execute(fm).get_result()
+    print(f'Dist: {dist}')
+    print(f'#Products: {sum(dist)}')
+
+    prob = BDDFeatureInclusionProbabilitlyBF(bdd_model, fm_config).execute(fm).get_result()
+    for f in prob.keys():
+        print(f'{f}: {prob[f]}')
+    #print(f'#Products: {sum(dist)}')
+
 if __name__ == "__main__":
     #main()
     #main_bdd_sampler()
     #bdd_orderings()
-    bdd_traverse()
+    #bdd_traverse()
+    bdd_product_distribution()
