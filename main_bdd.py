@@ -169,7 +169,14 @@ def bdd_product_distribution():
     prob = BDDFeatureInclusionProbabilitlyBF(bdd_model, fm_config).execute(fm).get_result()
     for f in prob.keys():
         print(f'{f}: {prob[f]}')
-    print(f'#Configs: {BDDNumberOfConfigurations(bdd_model).execute(fm).get_result()}')
+    print(f'#Configs: {BDDNumberOfConfigurations(bdd_model, fm_config).execute(fm).get_result()}')
+
+def bdd_operations():
+    cnf_model = CNFReader(PIZZA_FM_CNF_LOGIC).transform()
+    bdd_model = CNFToBDD(cnf_model).transform()
+
+    
+
 
 if __name__ == "__main__":
     #main()
@@ -177,3 +184,4 @@ if __name__ == "__main__":
     #bdd_orderings()
     #bdd_traverse()
     bdd_product_distribution()
+    bdd_operations()

@@ -1,10 +1,9 @@
 import random 
 
-from famapy.core.models import Configuration
 from famapy.core.operations.sampling import Sampling
 
-from famapy.metamodels.bdd_metamodel.models import BDDModel
-from famapy.metamodels.bdd_metamodel.operations import BDDNumberOfConfigurations
+from famapy.metamodels.fm_metamodel.models.fm_configuration import FMConfiguration
+from famapy.metamodels.fm_metamodel.models.feature_model import FeatureModel
 
 
 class BDDSampling(Sampling):
@@ -16,26 +15,17 @@ class BDDSampling(Sampling):
     Empirical Software Engineering]
     which relies on counting-based sampling inspired in the original Knuth algorithm.
 
-    This implementation supports samples with and without replacement as well as samples from a given partial configuration.
+    This implementation supports samples with no replacement as well as samples from a partial configuration.
     """
 
-    def __init__(self, size: int, with_replacement: bool=False, partial_configuration: Configuration=None) -> None:
+    def __init__(self, size: int, with_replacement: bool=False, partial_configuration: FMConfiguration=None) -> None:
         self.result = []
-        self.bdd_model = None
         self.size = size 
         self.with_replacement = with_replacement 
         self.partial_configuration = partial_configuration
 
-    def execute(self, bdd_model: BDDModel) -> 'BDDSampling':
-        self.bdd_model = bdd_model
-        self.result = self.sample(self.size, self.with_replacement, self.partial_configuration)
-        return self
-
-    def get_result(self) -> list[Configuration]:
-        return self.result
-
-    def sample(self, size: int, with_replacement: bool=False, partial_configuration: Configuration=None) -> list[Configuration]:
-        nof_configs = BDDNumberOfConfigurations(partial_configuration).execute(self.bdd_model).get_result()
+    def sample(self, size: int, with_replacement: bool=False, partial_configuration: FMConfiguration=None) -> list[FMConfiguration]:
+        nof_configs = self.get_number_of_configurations(partial_configuration)
         if size < 0 or (size > nof_configs and not with_replacement):
             raise ValueError('Sample larger than population or is negative.')
 
@@ -44,16 +34,16 @@ class BDDSampling(Sampling):
             config = self.get_random_configuration(partial_configuration)
             configurations.append(config)
         if not with_replacement:
-            configurations = set(configurations)
+            configurations = list(set(configurations))
             while len(configurations) < size:
                 config = self.get_random_configuration(partial_configuration)
-                configurations.add(config)
-        return list(configurations)
+                configurations.append(config)
+        return configurations 
 
-    def get_random_configuration(self, partial_configuration: Configuration=None) -> Configuration:
+    def get_random_configuration(self, partial_configuration: FMConfiguration=None) -> FMConfiguration:
         # Initialize the configurations and values for BDD nodes with already known features
         elements = {} if partial_configuration is None else partial_configuration.elements
-        values = {f: selected for f, selected in elements.items()}
+        values = {f.name : selected for f, selected in elements.items()}
         
         # Set the BDD nodes with the already known features values
         u = self.bdd_model.bdd.let(values, self.bdd_model.root)
@@ -72,10 +62,18 @@ class BDDSampling(Sampling):
             selected = random.choices([True, False], [nof_configs_var_selected, nof_configs_var_unselected], k=1)[0]
 
             # Update configuration and BDD node for the new feature
-            elements[feature] = selected
+            elements[self.feature_model.get_feature_by_name(feature)] = selected
             values[feature] = selected
             u = self.bdd_model.bdd.let({feature: selected}, u)
                 
             n_vars -= 1
-        return Configuration(elements)
+        return FMConfiguration(elements)
+
+    def execute(self, model: FeatureModel) -> 'BDDSampling':
+        self.feature_model = model
+        self.result = self.sample(self.size, self.with_replacement, self.partial_configuration)
+        return self
+
+    def get_result(self) -> list[FMConfiguration]:
+        return self.result
 
