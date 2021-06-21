@@ -1,8 +1,7 @@
-import random 
 import math
 from collections import defaultdict
-import re
-from sys import is_finalizing
+
+from dd.autoref import Function
 
 from famapy.core.operations.abstract_operation import Operation
 
@@ -10,7 +9,6 @@ from famapy.metamodels.fm_metamodel.models.fm_configuration import FMConfigurati
 from famapy.metamodels.fm_metamodel.models.feature_model import FeatureModel
 
 from famapy.metamodels.bdd_metamodel.models.bdd_model import BDDModel
-from dd.autoref import Function
 
 
 class ProductDistribution(Operation):
@@ -47,11 +45,11 @@ class ProductDistribution(Operation):
         self.dist = {0: [], 1: [1]}  # distribution vectors: `node` -> `list[int]`
         self.negates = defaultdict(int)
         root = self.bdd_model.root
-        # if root.negated:
-        #    root = ~root
+        if root.negated:
+            root = ~root
         self.get_prod_dist(root)
         #print(f'DIST: {self.get_node_dist(root, False)}')
-        return self.dist[self.get_node_id(root)]        
+        return self.dist[self.get_node_id(root, False)]        
 
     def get_prod_dist(self, n: Function):
         self.mark[n.node] = not self.mark[n.node]
@@ -59,7 +57,9 @@ class ProductDistribution(Operation):
         if not self.bdd_model.is_terminal_node(n):
             low = n.low
             high = n.high
-            
+            if low.negated:
+                low = ~low
+
             # Traverse
             #low = self.bdd_model.get_low_node(n)
             if self.mark[n.node] != self.mark[low.node]:
@@ -107,16 +107,16 @@ class ProductDistribution(Operation):
 
     def get_node_id(self, n: Function, is_low: bool) -> int:
         if self.bdd_model.is_terminal_node(n):
-            if is_low: 
+            if n.node == 1:
+                if n.negated:
+                    return 0
+                else:
+                    return 1
+            else:
                 if n.negated:
                     return 1
                 else:
                     return 0
-            else:
-                return 1
         else:
-            if n.negated:
-                return ~n.node
-            else:
-                return n.node
+            return n.node
 

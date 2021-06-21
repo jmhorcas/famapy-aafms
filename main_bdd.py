@@ -23,7 +23,7 @@ from famapy.metamodels.pysat_metamodel.utils.aafms_helper import AAFMsHelper
 from famapy.metamodels.pysat_metamodel.transformations.fm_to_pysat import FmToPysat
 
 from famapy.metamodels.bdd_metamodel.operations.product_distribution import ProductDistribution
-from famapy.metamodels.bdd_metamodel.operations import BDDProductDistributionBF, BDDFeatureInclusionProbabilitlyBF
+from famapy.metamodels.bdd_metamodel.operations import BDDProductDistributionBF, BDDFeatureInclusionProbabilitlyBF, BDDNumberOfConfigurations
 
 from famapy.metamodels.bdd_metamodel.utils.bdd_sampler import BDDSampler 
 
@@ -169,7 +169,7 @@ def bdd_product_distribution():
     prob = BDDFeatureInclusionProbabilitlyBF(bdd_model, fm_config).execute(fm).get_result()
     for f in prob.keys():
         print(f'{f}: {prob[f]}')
-    #print(f'#Products: {sum(dist)}')
+    print(f'#Configs: {BDDNumberOfConfigurations(bdd_model).execute(fm).get_result()}')
 
 if __name__ == "__main__":
     #main()

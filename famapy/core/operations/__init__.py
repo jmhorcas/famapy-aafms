@@ -15,11 +15,12 @@ from .count_leafs import CountLeafs  # pylint: disable=cyclic-import
 from .average_branching_factor import AverageBranchingFactor  # pylint: disable=cyclic-import
 from .product_distribution import ProductDistribution  # pylint: disable=cyclic-import
 from .feature_inclusion_probability import FeatureInclusionProbabilitly  # pylint: disable=cyclic-import
+from .number_of_configurations import NumberOfConfigurations
 
 __all__ = [
     "Commonality", "DeadFeatures", "CoreFeatures", "FalseOptionalFeatures",
     "ErrorDetection", "ErrorDiagnosis", "Operation", "Products", "Valid",
     "ValidConfiguration", "ValidProduct", "Variability", "CountLeafs",
-    "AverageBranchingFactor", "ProductDistribution", "FeatureInclusionProbabilitly"
+    "AverageBranchingFactor", "ProductDistribution", "FeatureInclusionProbabilitly", "NumberOfConfigurations"
 ]
 

@@ -1,4 +1,4 @@
-from famapy.core.operations.products import Products
+from famapy.core.operations import Products
 
 from famapy.metamodels.fm_metamodel.models import FeatureModel, FMConfiguration
 

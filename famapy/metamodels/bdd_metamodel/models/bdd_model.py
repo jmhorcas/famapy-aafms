@@ -20,7 +20,6 @@ class BDDModel:
         self.cnf_formula = None
         self.root = None
         self.variables = []
-        self.variable_order = {} 
 
     def from_cnf(self, cnf_formula: str, variables: list[str]):
         self.cnf_formula = cnf_formula
