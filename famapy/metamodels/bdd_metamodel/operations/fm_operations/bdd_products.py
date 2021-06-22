@@ -2,7 +2,7 @@ from famapy.core.operations import Products
 
 from famapy.metamodels.fm_metamodel.models import FeatureModel, FMConfiguration
 
-from famapy.metamodels.bdd_metamodel.models.bdd_model import BDDModel
+from famapy.metamodels.bdd_metamodel.models import BDDModel
 
 
 class BDDProducts(Products):
@@ -11,14 +11,14 @@ class BDDProducts(Products):
     It also supports the computation of all products from a partial configuration.
     """
     
-    def __init__(self, bdd_model: BDDModel, partial_configuration: FMConfiguration=None) -> None:
+    def __init__(self, feature_model: FeatureModel, partial_configuration: FMConfiguration=None) -> None:
         self.result = []
-        self.feature_model = None
-        self.bdd_model = bdd_model
+        self.bdd_model = None
+        self.feature_model = feature_model
         self.partial_configuration = partial_configuration
     
-    def execute(self, feature_model: FeatureModel) -> 'BDDProducts':
-        self.feature_model = feature_model
+    def execute(self, bdd_model: BDDModel) -> 'BDDProducts':
+        self.bdd_model = bdd_model
         self.result = self.get_products(self.partial_configuration)
         return self
 

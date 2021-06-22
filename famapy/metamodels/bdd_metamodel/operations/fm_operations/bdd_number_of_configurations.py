@@ -2,7 +2,7 @@ from famapy.core.operations import NumberOfConfigurations
 
 from famapy.metamodels.fm_metamodel.models import FeatureModel, FMConfiguration
 
-from famapy.metamodels.bdd_metamodel.models.bdd_model import BDDModel
+from famapy.metamodels.bdd_metamodel.models import BDDModel
 
 
 class BDDNumberOfConfigurations(NumberOfConfigurations):
@@ -11,14 +11,14 @@ class BDDNumberOfConfigurations(NumberOfConfigurations):
     It also supports counting the configurations from a given partial configuration.
     """
     
-    def __init__(self, bdd_model: BDDModel, partial_configuration: FMConfiguration=None) -> None:
+    def __init__(self, feature_model: FeatureModel, partial_configuration: FMConfiguration=None) -> None:
         self.result = 0
-        self.feature_model = None
-        self.bdd_model = bdd_model
+        self.bdd_model = None
+        self.feature_model = feature_model
         self.partial_configuration = partial_configuration
     
-    def execute(self, feature_model: FeatureModel) -> 'BDDNumberOfConfigurations':
-        self.feature_model = feature_model
+    def execute(self, bdd_model: BDDModel) -> 'BDDNumberOfConfigurations':
+        self.bdd_model = bdd_model
         self.result = self.get_number_of_configurations(self.partial_configuration)
         return self
 

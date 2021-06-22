@@ -1,10 +1,8 @@
-from famapy.metamodels.fm_metamodel.models.fm_configuration import FMConfiguration
-from famapy.core.operations import ProductDistribution
-
-from famapy.metamodels.fm_metamodel.models import FeatureModel
+from famapy.metamodels.fm_metamodel.models import FeatureModel, FMConfiguration
 
 from famapy.metamodels.bdd_metamodel.models import BDDModel
-from famapy.metamodels.bdd_metamodel.operations import BDDProducts
+from famapy.metamodels.bdd_metamodel.operations import ProductDistribution
+from famapy.metamodels.bdd_metamodel.operations.fm_operations import BDDProducts
 
 
 class BDDProductDistributionBF(ProductDistribution):
@@ -15,14 +13,14 @@ class BDDProductDistributionBF(ProductDistribution):
     Ref.: [Heradio et al. 2019. Supporting the Statistical Analysis of Variability Models. SPLC. (https://doi.org/10.1109/ICSE.2019.00091)]
     """
 
-    def __init__(self, bdd_model: BDDModel, partial_configuration: FMConfiguration=None) -> None:
+    def __init__(self, feature_model: FeatureModel, partial_configuration: FMConfiguration=None) -> None:
         self.result = []
-        self.feature_model = None
-        self.partial_configuration = partial_configuration
-        self.bdd_model = bdd_model
-    
-    def execute(self, feature_model: FeatureModel) -> 'BDDProductDistributionBF':
+        self.bdd_model = None
         self.feature_model = feature_model
+        self.partial_configuration = partial_configuration
+    
+    def execute(self, bdd_model: BDDModel) -> 'BDDProductDistributionBF':
+        self.bdd_model = bdd_model
         self.result = self.product_distribution(self.partial_configuration)
         return self
 
@@ -34,10 +32,9 @@ class BDDProductDistributionBF(ProductDistribution):
 
         It enumerates all products and filters them.
         """
-        products = BDDProducts(self.bdd_model, self.partial_configuration).execute(self.feature_model).get_result()
+        products = BDDProducts(self.feature_model, partial_configuration).execute(self.bdd_model).get_result()
         dist = []
         for i in range(len(self.bdd_model.variables)+1):
             dist.append(sum(len(p)==i for p in products))
         return dist
-
     
