@@ -2,7 +2,7 @@ from enum import Enum
 
 from dd.autoref import Function
 
-from famapy.core.transformations import TextToModel
+from famapy.core.transformations import ModelToText
 
 from famapy.metamodels.bdd_metamodel.models.bdd_model import BDDModel
 
@@ -15,7 +15,7 @@ class BDDDumpFormat(Enum):
     PNG = 'png'
     SVG = 'svg'
 
-class BDDWriter(TextToModel):
+class BDDWriter(ModelToText):
     """Create the dump file representing the argument BDD.
     
     The format can be:
@@ -30,11 +30,11 @@ class BDDWriter(TextToModel):
     def get_destination_extension() -> str:
         return BDDDumpFormat.DDDMPv3
 
-    def __init__(self, path: str, source_model: BDDModel) -> None:
+    def __init__(self, path: str, source_model: BDDModel, roots: list[Function]=None, output_format: BDDDumpFormat=BDDDumpFormat.DDDMPv3) -> None:
         self._path = path
         self._source_model = source_model
-        self._output_format = BDDDumpFormat.DDDMPv3
-        self._roots = None
+        self._output_format = output_format
+        self._roots = roots
 
     def set_format(self, output_format: BDDDumpFormat):
         self._output_format = output_format

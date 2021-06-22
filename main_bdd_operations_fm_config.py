@@ -1,11 +1,11 @@
 from collections import defaultdict
-from functools import partial
 
 from famapy.metamodels.fm_metamodel.models import FMConfiguration
 from famapy.metamodels.fm_metamodel.transformations import FeatureIDEParser
 
 from famapy.metamodels.cnf_metamodel.transformations.cnf_reader import CNFReader
 
+from famapy.metamodels.bdd_metamodel.transformations.bdd_writer import BDDDumpFormat, BDDWriter
 from famapy.metamodels.bdd_metamodel.transformations.cnf_to_bdd import CNFToBDD
 from famapy.metamodels.bdd_metamodel.operations.fm_operations import BDDProducts, BDDNumberOfConfigurations, BDDProductDistributionBF, BDDFeatureInclusionProbabilitlyBF, BDDSampling
 
@@ -31,6 +31,12 @@ def main():
 
     # Create the BDD model from the CNF model
     bdd_model = CNFToBDD(cnf_model).transform()
+
+    # Save the BDD as a .png
+    bdd_writer = BDDWriter(bdd_model.root.var+'.png', bdd_model)
+    bdd_writer.set_format(BDDDumpFormat.PNG)
+    bdd_writer.set_roots([bdd_model.root])
+    bdd_writer.transform()
 
     # Create a partial configuration
     elements = {fm.get_feature_by_name('Pizza'): True,
