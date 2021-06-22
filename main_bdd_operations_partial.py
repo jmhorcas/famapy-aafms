@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from famapy.core.models import Configuration
+
 from famapy.metamodels.cnf_metamodel.transformations.cnf_reader import CNFReader
 
 from famapy.metamodels.bdd_metamodel.transformations.cnf_to_bdd import CNFToBDD
@@ -21,31 +23,35 @@ def main():
     # Create the BDD model from the CNF model
     bdd_model = CNFToBDD(cnf_model).transform()
 
+    # Create a partial configuration
+    elements = {'Pizza': True, 'Big': True}
+    config = Configuration(elements)
+
     # BDD Solutions operation
-    solutions = BDDProducts().execute(bdd_model).get_result()
+    solutions = BDDProducts(config).execute(bdd_model).get_result()
     for i, sol in enumerate(solutions):
         print(f'Sol. {i}: {[f for f in sol.elements if sol.elements[f]]}')
 
     # BDD number of solutions
-    nof_solutions = BDDNumberOfConfigurations().execute(bdd_model).get_result()
+    nof_solutions = BDDNumberOfConfigurations(config).execute(bdd_model).get_result()
     print(f'#Solutions: {nof_solutions}')
 
     assert len(solutions) == nof_solutions 
 
     # BDD product distribution
-    dist = BDDProductDistributionBF().execute(bdd_model).get_result()
+    dist = BDDProductDistributionBF(config).execute(bdd_model).get_result()
     print(f'Product Distribution: {dist}')
 
     assert sum(dist) == nof_solutions
 
     # BDD feature inclusion probabilities
-    prob = BDDFeatureInclusionProbabilitlyBF().execute(bdd_model).get_result()
+    prob = BDDFeatureInclusionProbabilitlyBF(config).execute(bdd_model).get_result()
     print('Feature Inclusion Probabilities:')
     for f in prob.keys():
         print(f'{f}: {prob[f]}')
 
     # BDD Sampling
-    sample = BDDSampling(size=5, with_replacement=False).execute(bdd_model).get_result()
+    sample = BDDSampling(size=5, with_replacement=False, partial_configuration=config).execute(bdd_model).get_result()
     print('Uniform Random Sampling:')
     for i, sol in enumerate(sample):
         print(f'Sol. {i}: {[f for f in sol.elements if sol.elements[f]]}')
@@ -54,9 +60,9 @@ def main():
     stats = defaultdict(int)
     N = int(1e4)
     for i in range(N):
-        sample = BDDSampling(size=1, with_replacement=False).execute(bdd_model).get_result()
-        for config in sample:
-            stats[config] += 1
+        sample = BDDSampling(size=1, with_replacement=False, partial_configuration=config).execute(bdd_model).get_result()
+        for c in sample:
+            stats[c] += 1
 
     for i, c in enumerate(stats):
         print(f"{i}: {stats[c]/N*100}")

@@ -43,18 +43,19 @@ class BDDSampling(Sampling):
         for _ in range(size):
             config = self.get_random_configuration(partial_configuration)
             configurations.append(config)
+
         if not with_replacement:
             configurations = set(configurations)
             while len(configurations) < size:
                 config = self.get_random_configuration(partial_configuration)
                 configurations.add(config)
+
         return list(configurations)
 
     def get_random_configuration(self, partial_configuration: Configuration=None) -> Configuration:
         # Initialize the configurations and values for BDD nodes with already known features
-        elements = {} if partial_configuration is None else partial_configuration.elements
-        values = {f: selected for f, selected in elements.items()}
-        
+        values = {} if partial_configuration is None else {f: selected for f, selected in partial_configuration.elements.items()}
+
         # Set the BDD nodes with the already known features values
         u = self.bdd_model.bdd.let(values, self.bdd_model.root)
 
@@ -72,10 +73,9 @@ class BDDSampling(Sampling):
             selected = random.choices([True, False], [nof_configs_var_selected, nof_configs_var_unselected], k=1)[0]
 
             # Update configuration and BDD node for the new feature
-            elements[feature] = selected
             values[feature] = selected
             u = self.bdd_model.bdd.let({feature: selected}, u)
                 
             n_vars -= 1
-        return Configuration(elements)
+        return Configuration(values)
 
