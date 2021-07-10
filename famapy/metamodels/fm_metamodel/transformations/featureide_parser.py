@@ -130,9 +130,9 @@ class FeatureIDEParser(TextToModel):
     def _parse_rule(self, rule) -> str:
         """Return the representation of the constraint (rule) in the AST syntax."""
         str_ast = ''
-        # print(f'Rule tag: {rule.tag}')
-        # print(f'Rule values: {[r for r in rule]}')
-        # print(f'Rule text: {rule.text}')
+        #print(f'Rule tag: {rule.tag}')
+        #print(f'Rule values: {[r for r in rule]}')
+        #print(f'Rule text: {rule.text}')
         if rule.tag == FeatureIDEParser.TAG_VAR:
             str_ast = rule.text
         elif rule.tag == FeatureIDEParser.TAG_NOT:
@@ -143,8 +143,14 @@ class FeatureIDEParser(TextToModel):
             #str_ast = '(' + self._parse_rule(rule[0]) + ' eq ' + self._parse_rule(rule[1]) + ')'
             str_ast = '(' + self._parse_rule(rule[0]) + ' implies ' + self._parse_rule(rule[1]) + ') and (' + self._parse_rule(rule[1]) + ' implies ' + self._parse_rule(rule[0]) + ')'
         elif rule.tag == FeatureIDEParser.TAG_DISJ:
-            str_ast = '(' + self._parse_rule(rule[0]) + ' or ' + self._parse_rule(rule[1]) + ')'
+            if len(rule) > 1:
+                str_ast = '(' + self._parse_rule(rule[0]) + ' or ' + self._parse_rule(rule[1]) + ')'
+            else:
+                str_ast = self._parse_rule(rule[0])
         elif rule.tag == FeatureIDEParser.TAG_CONJ:
-            str_ast = '(' + self._parse_rule(rule[0]) + ' and ' + self._parse_rule(rule[1]) + ')'
+            if len(rule) > 1:
+                str_ast = '(' + self._parse_rule(rule[0]) + ' and ' + self._parse_rule(rule[1]) + ')'
+            else:
+                str_ast = self._parse_rule(rule[0])
             
         return str_ast

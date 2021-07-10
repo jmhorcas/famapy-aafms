@@ -25,7 +25,7 @@ class TestFeatureIDEParser(unittest.TestCase):
                        #'busybox-1.18.0':      [854, 58, 'root', 20, 0, 8], # 67 constraints by FeatureIDE
                        # 'ea2468':              [1408, 1281, 'root', 4, 0, 0],
                        # 'automotive2_1':       [14010, 624, 'N_379925076__F_91527E35945B', 1394, 0, 0],
-                       # 'linux-2.6.33.3':      [6467, 7650, 'root', 53, 0, 0],
+                       'linux-2.6.33.3':      [6467, 3545, 'root', 53, 2, 39],
                        # 'uClinux-distribution':[1580, 247, 'root', 6, 0, 0],
                        # 'embtoolkit':          [1179, 167, 'root', 78, 0, 0],
                        # 'linux-2.6.33.3basic': [44079, 28821, 'root', 2238, 9434, 39],
