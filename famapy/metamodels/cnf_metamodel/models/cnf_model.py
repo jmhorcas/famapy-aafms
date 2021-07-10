@@ -13,11 +13,10 @@ class CNFLogicConnective(Enum):
 class CNFNotation(Enum):
     """Possible notations of a CNF formula."""
     LOGICAL = {CNFLogicConnective.NOT: '¬', CNFLogicConnective.AND: '∧', CNFLogicConnective.OR: '∨'}
+    TEXTUAL = {CNFLogicConnective.NOT: 'not', CNFLogicConnective.AND: 'and', CNFLogicConnective.OR: 'or'}
     JAVA = {CNFLogicConnective.NOT: '!', CNFLogicConnective.AND: '&&', CNFLogicConnective.OR: '||'}
     JAVA_SHORT = {CNFLogicConnective.NOT: '!', CNFLogicConnective.AND: '&', CNFLogicConnective.OR: '|'}
     SHORT = {CNFLogicConnective.NOT: '-', CNFLogicConnective.AND: '&', CNFLogicConnective.OR: '|'}
-    TEXTUAL = {CNFLogicConnective.NOT: 'not', CNFLogicConnective.AND: 'and', CNFLogicConnective.OR: 'or'}
-
 
 class CNFModel(VariabilityModel):
     """Representation of a variability model in conjunctive normal form (CNF).
@@ -105,12 +104,41 @@ def identify_notation(cnf_formula: str) -> CNFNotation:
 
     Default CNFNotation.JAVA.
     """
+    notation = check_unary_connective(cnf_formula)
+    if notation is None or notation == CNFNotation.JAVA or notation == CNFNotation.JAVA_SHORT:
+        notation = check_binary_connective(cnf_formula)
+    if notation is None:
+        notation = CNFNotation.JAVA 
+    return notation
+
+def check_unary_connective(cnf_formula: str) -> CNFNotation:
+    symbol = CNFNotation.LOGICAL.value[CNFLogicConnective.NOT]
+    if (' ' + symbol) in cnf_formula or ('(' + symbol) in cnf_formula:
+        return CNFNotation.LOGICAL
+
+    symbol = CNFNotation.SHORT.value[CNFLogicConnective.NOT]
+    if (' ' + symbol) in cnf_formula or ('(' + symbol) in cnf_formula:
+        return CNFNotation.SHORT
+
+    symbol = CNFNotation.TEXTUAL.value[CNFLogicConnective.NOT]
+    if (' ' + symbol + ' ') in cnf_formula or ('(' + symbol + ' ') in cnf_formula:
+        return CNFNotation.TEXTUAL
+    
+    symbol = CNFNotation.JAVA.value[CNFLogicConnective.NOT] # JAVA or JAVA_SHORT
+    if (' ' + symbol) in cnf_formula or ('(' + symbol) in cnf_formula:
+        return CNFNotation.JAVA 
+
+    return None
+
+def check_binary_connective(cnf_formula: str) -> CNFNotation:
     for notation in CNFNotation:
-        for symbol in notation.value.values():
-            symbol_pattern = ' ' + symbol + ' '
-            if symbol_pattern in cnf_formula:
-                return notation
-    return CNFNotation.JAVA
+        for connective in notation.value.keys():
+            if connective != CNFLogicConnective.NOT:
+                symbol = notation.value[connective]
+                symbol_pattern = ' ' + symbol + ' '
+                if symbol_pattern in cnf_formula:
+                    return notation
+    return None
 
 def extract_variables(cnf_formula: str) -> list[str]:
     """Return the list of variables' names of the CNF formula."""

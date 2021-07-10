@@ -1275,7 +1275,7 @@
 						<feature name="SCSI_ARCMSR_AER"/>
 					</and>
 					<feature name="SCSI_ACARD"/>
-					<feature name="53C700_LE_ON_BE"/>
+					<feature name="_53C700_LE_ON_BE"/>
 					<feature name="SCSI_QLOGICPTI"/>
 					<feature name="SCSI_CUMANA_2"/>
 					<feature name="SCSI_GENERIC_NCR5380_MMIO"/>
@@ -1345,7 +1345,7 @@
 					</and>
 					<feature name="SCSI_7000FASST"/>
 					<feature name="SCSI_PAS16"/>
-					<feature name="53C700_BE_BUS"/>
+					<feature name="_53C700_BE_BUS"/>
 					<feature name="MVME16x_SCSI"/>
 					<feature name="SCSI_DTC3280"/>
 					<and name="SCSI_SYM53C8XX_2">
@@ -2462,7 +2462,7 @@
 							<feature mandatory="true" name="SMB_NLS_REMOTE"/>
 						</and>
 					</and>
-					<feature name="9P_FS"/>
+					<feature name="_9P_FS"/>
 					<feature name="RPCSEC_GSS_SPKM3"/>
 					<and name="CIFS">
 						<feature name="CIFS_EXPERIMENTAL"/>
@@ -2494,7 +2494,7 @@
 					<feature name="NFS_COMMON"/>
 					<feature name="EXPORTFS"/>
 					<feature name="NFS_ACL_SUPPORT"/>
-					<feature name="9P_FSCACHE"/>
+					<feature name="_9P_FSCACHE"/>
 				</and>
 				<feature name="RTC"/>
 				<feature name="BINFMT_SOM"/>
@@ -4401,7 +4401,7 @@
 							<feature name="BPQETHER"/>
 							<feature name="NETROM"/>
 							<feature name="BAYCOM_EPP"/>
-							<feature name="6PACK"/>
+							<feature name="_6PACK"/>
 							<feature name="DMASCC"/>
 						</and>
 					</and>
@@ -4977,7 +4977,7 @@
 					<feature name="MODULE_SRCVERSION_ALL"/>
 				</and>
 				<feature name="ARCH_INLINE_SPIN_TRYLOCK_BH"/>
-				<feature name="4KSTACKS"/>
+				<feature name="_4KSTACKS"/>
 				<and name="X86_64_ACPI_NUMA">
 					<feature name="NODES_SPAN_OTHER_NODES"/>
 				</and>
@@ -5610,7 +5610,7 @@
 						<feature name="IBMOL"/>
 						<feature name="IBMTR"/>
 						<feature name="SMCTR"/>
-						<feature name="3C359"/>
+						<feature name="_3C359"/>
 						<feature name="IBMLS"/>
 						<and name="TMS380TR">
 							<feature name="SKISA"/>
@@ -6068,11 +6068,11 @@
 							<feature name="BFIN_MAC_USE_L1"/>
 							<feature name="BFIN_MAC_RMII"/>
 						</and>
-						<and name="8139TOO">
-							<feature name="8139TOO_8129"/>
-							<feature name="8139TOO_PIO"/>
-							<feature name="8139TOO_TUNE_TWISTER"/>
-							<feature name="8139_OLD_RX_RESET"/>
+						<and name="_8139TOO">
+							<feature name="_8139TOO_8129"/>
+							<feature name="_8139TOO_PIO"/>
+							<feature name="_8139TOO_TUNE_TWISTER"/>
+							<feature name="_8139_OLD_RX_RESET"/>
 						</and>
 						<feature name="SMSC9420"/>
 						<feature name="SMC9194"/>
@@ -6089,7 +6089,7 @@
 							<feature mandatory="true" name="IBM_NEW_EMAC_POLL_WEIGHT"/>
 							<feature mandatory="true" name="IBM_NEW_EMAC_RX_COPY_THRESHOLD"/>
 						</and>
-						<feature name="8139CP"/>
+						<feature name="_8139CP"/>
 						<and name="NET_TULIP">
 							<and name="DE2104X">
 								<feature mandatory="true" name="DE2104X_DSL"/>
@@ -6138,7 +6138,7 @@
 						<feature name="IBM_NEW_EMAC_NO_FLOW_CTRL"/>
 						<feature name="TI_DAVINCI_EMAC"/>
 						<feature name="ES3210"/>
-						<feature name="68360_ENET"/>
+						<feature name="_68360_ENET"/>
 						<and name="DM9000">
 							<feature name="DM9000_FORCE_SIMPLE_PHY_POLL"/>
 							<feature mandatory="true" name="DM9000_DEBUGLEVEL"/>
@@ -6155,7 +6155,7 @@
 							<feature name="EL1"/>
 							<feature name="VORTEX"/>
 							<feature name="ELPLUS"/>
-							<feature name="3C515"/>
+							<feature name="_3C515"/>
 							<feature name="ELMC"/>
 							<feature name="TYPHOON"/>
 							<feature name="EL3"/>
@@ -6329,7 +6329,7 @@
 					<feature name="OMAP2_DSS_FAKE_VSYNC"/>
 				</and>
 				<feature mandatory="true" name="DEFAULT_SECURITY"/>
-				<feature name="64BIT"/>
+				<feature name="_64BIT"/>
 				<and name="CGROUPS">
 					<feature name="CGROUP_DEVICE"/>
 					<and name="RESOURCE_COUNTERS">
@@ -7341,7 +7341,7 @@
 					<feature name="MACHZ_WDT"/>
 					<feature name="AT32AP700X_WDT"/>
 					<feature name="SMSC37B787_WDT"/>
-					<feature name="977_WATCHDOG"/>
+					<feature name="_977_WATCHDOG"/>
 					<feature name="WDT_MTX1"/>
 					<feature name="ZVM_WATCHDOG"/>
 					<feature name="WAFER_WDT"/>
@@ -7358,7 +7358,7 @@
 					<feature name="W83697UG_WDT"/>
 					<feature name="SMSC_SCH311X_WDT"/>
 					<feature name="IOP_WATCHDOG"/>
-					<feature name="21285_WATCHDOG"/>
+					<feature name="_21285_WATCHDOG"/>
 					<feature name="HP_WATCHDOG"/>
 					<feature name="ADX_WATCHDOG"/>
 					<feature name="IXP4XX_WATCHDOG"/>
@@ -7375,7 +7375,7 @@
 					<feature name="SBC_EPX_C3_WATCHDOG"/>
 					<feature name="TWL4030_WATCHDOG"/>
 					<feature name="WATCHDOG_NOWAYOUT"/>
-					<feature name="60XX_WDT"/>
+					<feature name="_60XX_WDT"/>
 					<feature name="S3C2410_WATCHDOG"/>
 					<feature name="WATCHDOG_CP1XXX"/>
 					<feature name="EP93XX_WATCHDOG"/>
@@ -7388,7 +7388,7 @@
 					<feature name="SBC_FITPC2_WATCHDOG"/>
 					<feature name="STMP3XXX_WATCHDOG"/>
 					<feature name="GEF_WDT"/>
-					<feature name="8xxx_WDT"/>
+					<feature name="_8xxx_WDT"/>
 					<feature name="AT91SAM9X_WATCHDOG"/>
 					<feature name="IBMASR"/>
 					<feature name="SBC7240_WDT"/>
@@ -7418,7 +7418,7 @@
 			<rule>
 				<conj>
 					<disj>
-						<var>64BIT</var>
+						<var>_64BIT</var>
 						<var>X86_32</var>
 					</disj>
 					<disj>
@@ -7426,7 +7426,7 @@
 							<var>X86_32</var>
 						</not>
 						<not>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 						</not>
 					</disj>
 				</conj>
@@ -7435,7 +7435,7 @@
 				<conj>
 					<disj>
 						<not>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 						</not>
 						<var>X86_64</var>
 					</disj>
@@ -7443,7 +7443,7 @@
 						<not>
 							<var>X86_64</var>
 						</not>
-						<var>64BIT</var>
+						<var>_64BIT</var>
 					</disj>
 				</conj>
 			</rule>
@@ -7871,7 +7871,7 @@
 							</not>
 							<disj>
 								<not>
-									<var>64BIT</var>
+									<var>_64BIT</var>
 								</not>
 								<not>
 									<var>ACPI_SLEEP</var>
@@ -7887,7 +7887,7 @@
 						<disj>
 							<var>SMP</var>
 							<conj>
-								<var>64BIT</var>
+								<var>_64BIT</var>
 								<var>ACPI_SLEEP</var>
 							</conj>
 						</disj>
@@ -8274,7 +8274,7 @@
 										</not>
 									</conj>
 									<not>
-										<var>64BIT</var>
+										<var>_64BIT</var>
 									</not>
 								</disj>
 								<disj>
@@ -8283,7 +8283,7 @@
 											<var>TREE_RCU</var>
 											<var>TREE_PREEMPT_RCU</var>
 										</disj>
-										<var>64BIT</var>
+										<var>_64BIT</var>
 									</conj>
 									<disj>
 										<conj>
@@ -8294,7 +8294,7 @@
 												<var>TREE_PREEMPT_RCU</var>
 											</not>
 										</conj>
-										<var>64BIT</var>
+										<var>_64BIT</var>
 									</disj>
 								</disj>
 							</conj>
@@ -8310,7 +8310,7 @@
 										<var>TREE_RCU</var>
 										<var>TREE_PREEMPT_RCU</var>
 									</disj>
-									<var>64BIT</var>
+									<var>_64BIT</var>
 								</conj>
 								<conj>
 									<not>
@@ -8319,7 +8319,7 @@
 												<var>TREE_RCU</var>
 												<var>TREE_PREEMPT_RCU</var>
 											</disj>
-											<var>64BIT</var>
+											<var>_64BIT</var>
 										</conj>
 									</not>
 									<conj>
@@ -8328,7 +8328,7 @@
 											<var>TREE_PREEMPT_RCU</var>
 										</disj>
 										<not>
-											<var>64BIT</var>
+											<var>_64BIT</var>
 										</not>
 									</conj>
 								</conj>
@@ -9909,7 +9909,7 @@
 											</not>
 											<conj>
 												<not>
-													<var>64BIT</var>
+													<var>_64BIT</var>
 												</not>
 												<not>
 													<var>LBDAF</var>
@@ -9952,7 +9952,7 @@
 										<conj>
 											<var>EXPERIMENTAL</var>
 											<disj>
-												<var>64BIT</var>
+												<var>_64BIT</var>
 												<var>LBDAF</var>
 											</disj>
 										</conj>
@@ -10144,7 +10144,7 @@
 					<conj>
 						<var>BLOCK</var>
 						<not>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 						</not>
 					</conj>
 					<conj>
@@ -10153,7 +10153,7 @@
 								<not>
 									<var>BLOCK</var>
 								</not>
-								<var>64BIT</var>
+								<var>_64BIT</var>
 							</disj>
 							<var>LBDAF</var>
 						</disj>
@@ -10164,7 +10164,7 @@
 							<conj>
 								<var>BLOCK</var>
 								<not>
-									<var>64BIT</var>
+									<var>_64BIT</var>
 								</not>
 							</conj>
 						</disj>
@@ -13233,13 +13233,13 @@
 				<disj>
 					<conj>
 						<not>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 						</not>
 						<var>PROCESSOR_SELECT</var>
 					</conj>
 					<conj>
 						<disj>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 							<var>CPU_SUP_CYRIX_32</var>
 						</disj>
 						<disj>
@@ -13247,7 +13247,7 @@
 								<var>CPU_SUP_CYRIX_32</var>
 							</not>
 							<not>
-								<var>64BIT</var>
+								<var>_64BIT</var>
 							</not>
 						</disj>
 					</conj>
@@ -13283,13 +13283,13 @@
 				<disj>
 					<conj>
 						<not>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 						</not>
 						<var>PROCESSOR_SELECT</var>
 					</conj>
 					<conj>
 						<disj>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 							<var>CPU_SUP_TRANSMETA_32</var>
 						</disj>
 						<disj>
@@ -13297,7 +13297,7 @@
 								<var>CPU_SUP_TRANSMETA_32</var>
 							</not>
 							<not>
-								<var>64BIT</var>
+								<var>_64BIT</var>
 							</not>
 						</disj>
 					</conj>
@@ -13307,13 +13307,13 @@
 				<disj>
 					<conj>
 						<not>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 						</not>
 						<var>PROCESSOR_SELECT</var>
 					</conj>
 					<conj>
 						<disj>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 							<var>CPU_SUP_UMC_32</var>
 						</disj>
 						<disj>
@@ -13321,7 +13321,7 @@
 								<var>CPU_SUP_UMC_32</var>
 							</not>
 							<not>
-								<var>64BIT</var>
+								<var>_64BIT</var>
 							</not>
 						</disj>
 					</conj>
@@ -15691,7 +15691,7 @@
 					<disj>
 						<conj>
 							<not>
-								<var>64BIT</var>
+								<var>_64BIT</var>
 							</not>
 							<conj>
 								<not>
@@ -15707,7 +15707,7 @@
 							<var>PAGEFLAGS_EXTENDED</var>
 						</not>
 						<disj>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 							<disj>
 								<var>SPARSEMEM_VMEMMAP</var>
 								<not>
@@ -15753,7 +15753,7 @@
 					<disj>
 						<conj>
 							<not>
-								<var>64BIT</var>
+								<var>_64BIT</var>
 							</not>
 							<not>
 								<var>ARCH_PHYS_ADDR_T_64BIT</var>
@@ -15766,7 +15766,7 @@
 							<var>PHYS_ADDR_T_64BIT</var>
 						</not>
 						<disj>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 							<var>ARCH_PHYS_ADDR_T_64BIT</var>
 						</disj>
 					</disj>
@@ -28985,7 +28985,7 @@
 								<conj>
 									<var>AX25</var>
 									<not>
-										<var>64BIT</var>
+										<var>_64BIT</var>
 									</not>
 								</conj>
 							</conj>
@@ -29507,7 +29507,7 @@
 								<var>PCI</var>
 								<conj>
 									<not>
-										<var>64BIT</var>
+										<var>_64BIT</var>
 									</not>
 									<var>VIRT_TO_BUS</var>
 								</conj>
@@ -33094,7 +33094,7 @@
 						<conj>
 							<var>PARIDE</var>
 							<not>
-								<var>64BIT</var>
+								<var>_64BIT</var>
 							</not>
 						</conj>
 					</conj>
@@ -36286,7 +36286,7 @@
 							<conj>
 								<var>SCSI</var>
 								<not>
-									<var>64BIT</var>
+									<var>_64BIT</var>
 								</not>
 							</conj>
 						</conj>
@@ -38033,11 +38033,11 @@
 								</conj>
 							</disj>
 						</disj>
-						<var>53C700_BE_BUS</var>
+						<var>_53C700_BE_BUS</var>
 					</disj>
 					<disj>
 						<not>
-							<var>53C700_BE_BUS</var>
+							<var>_53C700_BE_BUS</var>
 						</not>
 						<conj>
 							<var>SCSI_LOWLEVEL</var>
@@ -38873,7 +38873,7 @@
 							<conj>
 								<var>SCSI</var>
 								<not>
-									<var>64BIT</var>
+									<var>_64BIT</var>
 								</not>
 							</conj>
 						</conj>
@@ -39146,7 +39146,7 @@
 							<conj>
 								<var>PCMCIA</var>
 								<not>
-									<var>64BIT</var>
+									<var>_64BIT</var>
 								</not>
 							</conj>
 						</conj>
@@ -39183,7 +39183,7 @@
 							<conj>
 								<var>PCMCIA</var>
 								<not>
-									<var>64BIT</var>
+									<var>_64BIT</var>
 								</not>
 							</conj>
 						</conj>
@@ -41056,7 +41056,7 @@
 						<conj>
 							<var>I2O_EXT_ADAPTEC</var>
 							<disj>
-								<var>64BIT</var>
+								<var>_64BIT</var>
 								<var>HIGHMEM64G</var>
 							</disj>
 						</conj>
@@ -41073,7 +41073,7 @@
 									</not>
 									<conj>
 										<not>
-											<var>64BIT</var>
+											<var>_64BIT</var>
 										</not>
 										<not>
 											<var>HIGHMEM64G</var>
@@ -41092,7 +41092,7 @@
 								<conj>
 									<var>I2O_EXT_ADAPTEC</var>
 									<disj>
-										<var>64BIT</var>
+										<var>_64BIT</var>
 										<var>HIGHMEM64G</var>
 									</disj>
 								</conj>
@@ -41635,7 +41635,7 @@
 					</conj>
 					<disj>
 						<not>
-							<var>3C515</var>
+							<var>_3C515</var>
 						</not>
 					</disj>
 				</disj>
@@ -42799,7 +42799,7 @@
 					</conj>
 					<disj>
 						<not>
-							<var>8139CP</var>
+							<var>_8139CP</var>
 						</not>
 					</disj>
 				</disj>
@@ -42818,7 +42818,7 @@
 					</conj>
 					<disj>
 						<not>
-							<var>8139TOO</var>
+							<var>_8139TOO</var>
 						</not>
 					</disj>
 				</disj>
@@ -44506,7 +44506,7 @@
 							<conj>
 								<var>PCI</var>
 								<not>
-									<var>64BIT</var>
+									<var>_64BIT</var>
 								</not>
 							</conj>
 						</conj>
@@ -44529,7 +44529,7 @@
 					</conj>
 					<disj>
 						<not>
-							<var>3C359</var>
+							<var>_3C359</var>
 						</not>
 					</disj>
 				</disj>
@@ -44668,7 +44668,7 @@
 								<disj>
 									<var>BROKEN</var>
 									<not>
-										<var>64BIT</var>
+										<var>_64BIT</var>
 									</not>
 								</disj>
 							</conj>
@@ -50039,7 +50039,7 @@
 									<var>PCI</var>
 									<conj>
 										<not>
-											<var>64BIT</var>
+											<var>_64BIT</var>
 										</not>
 										<var>VIRT_TO_BUS</var>
 									</conj>
@@ -55071,7 +55071,7 @@
 								<conj>
 									<var>INPUT</var>
 									<not>
-										<var>64BIT</var>
+										<var>_64BIT</var>
 									</not>
 								</conj>
 							</conj>
@@ -59010,7 +59010,7 @@
 					</conj>
 					<disj>
 						<not>
-							<var>60XX_WDT</var>
+							<var>_60XX_WDT</var>
 						</not>
 					</disj>
 				</disj>
@@ -105001,7 +105001,7 @@
 					<conj>
 						<var>INFINIBAND</var>
 						<conj>
-							<var>64BIT</var>
+							<var>_64BIT</var>
 							<var>NET</var>
 						</conj>
 					</conj>
@@ -109551,7 +109551,7 @@
 								<var>ISA</var>
 								<conj>
 									<not>
-										<var>64BIT</var>
+										<var>_64BIT</var>
 									</not>
 									<var>WLAN</var>
 								</conj>
@@ -111339,7 +111339,7 @@
 														</not>
 														<conj>
 															<not>
-																<var>64BIT</var>
+																<var>_64BIT</var>
 															</not>
 															<not>
 																<var>LBDAF</var>
@@ -111493,7 +111493,7 @@
 													<conj>
 														<var>EXPERIMENTAL</var>
 														<disj>
-															<var>64BIT</var>
+															<var>_64BIT</var>
 															<var>LBDAF</var>
 														</disj>
 													</conj>
@@ -111607,7 +111607,7 @@
 						<conj>
 							<var>EXPERIMENTAL</var>
 							<disj>
-								<var>64BIT</var>
+								<var>_64BIT</var>
 								<var>LBDAF</var>
 							</disj>
 						</conj>
@@ -112011,7 +112011,7 @@
 										</not>
 										<conj>
 											<not>
-												<var>64BIT</var>
+												<var>_64BIT</var>
 											</not>
 											<not>
 												<var>LBDAF</var>
@@ -112043,7 +112043,7 @@
 									<conj>
 										<var>EXPERIMENTAL</var>
 										<disj>
-											<var>64BIT</var>
+											<var>_64BIT</var>
 											<var>LBDAF</var>
 										</disj>
 									</conj>
@@ -112537,7 +112537,7 @@
 											<var>EXPERIMENTAL</var>
 											<conj>
 												<disj>
-													<var>64BIT</var>
+													<var>_64BIT</var>
 													<var>LBDAF</var>
 												</disj>
 												<var>GFS2_FS_LOCKING_DLM</var>
@@ -112640,7 +112640,7 @@
 											<disj>
 												<conj>
 													<not>
-														<var>64BIT</var>
+														<var>_64BIT</var>
 													</not>
 													<not>
 														<var>LBDAF</var>
@@ -112714,7 +112714,7 @@
 											<var>EXPERIMENTAL</var>
 											<conj>
 												<disj>
-													<var>64BIT</var>
+													<var>_64BIT</var>
 													<var>LBDAF</var>
 												</disj>
 												<var>GFS2_FS_LOCKING_DLM</var>
@@ -114271,7 +114271,7 @@
 					</conj>
 					<disj>
 						<not>
-							<var>9P_FS</var>
+							<var>_9P_FS</var>
 						</not>
 					</disj>
 				</disj>
@@ -114283,14 +114283,14 @@
 						<conj>
 							<var>EXPERIMENTAL</var>
 							<conj>
-								<var>9P_FS</var>
+								<var>_9P_FS</var>
 								<var>FSCACHE</var>
 							</conj>
 						</conj>
 					</conj>
 					<disj>
 						<not>
-							<var>9P_FSCACHE</var>
+							<var>_9P_FSCACHE</var>
 						</not>
 					</disj>
 				</disj>
@@ -114512,7 +114512,7 @@
 										<disj>
 											<conj>
 												<not>
-													<var>64BIT</var>
+													<var>_64BIT</var>
 												</not>
 												<not>
 													<var>LBDAF</var>
@@ -114539,7 +114539,7 @@
 										<var>EXPERIMENTAL</var>
 										<conj>
 											<disj>
-												<var>64BIT</var>
+												<var>_64BIT</var>
 												<var>LBDAF</var>
 											</disj>
 											<var>GFS2_FS_LOCKING_DLM</var>
@@ -118248,7 +118248,7 @@
 					<var>X86_32</var>
 					<disj>
 						<not>
-							<var>4KSTACKS</var>
+							<var>_4KSTACKS</var>
 						</not>
 					</disj>
 				</disj>
