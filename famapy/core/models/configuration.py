@@ -2,6 +2,10 @@ from typing import Any
 
 
 class Configuration():
+    """A configuration is a selection of elements in a variability model.
+    
+    It is represented as a dictionary of Any -> bool.
+    """
 
     def __init__(self, elements: dict[Any, bool]) -> None:
         self.elements = elements
@@ -13,4 +17,4 @@ class Configuration():
         return hash(frozenset(self.elements.items()))
 
     def __str__(self) -> str:
-        return str([str(e) for e in self.elements.keys() if self.elements[e]])
+        return str(self.elements)
