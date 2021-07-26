@@ -9,7 +9,7 @@ from famapy.metamodels.fm_metamodel.operations.metrics import Metrics
 from famapy.metamodels.fm_metamodel.operations import get_core_features, average_branching_factor, max_depth_tree
 
 
-HTTP_API_TOKEN = '1925453218:AAFJZtxLJ1SQ_1eHxFouYg1-0F8DTXuBpfM'
+HTTP_API_TOKEN = ''
 
 
 def analyze_model(file_name: str) -> str:
