@@ -33,13 +33,12 @@ class BDDModel:
         self.root = self.bdd.add_expr(self.cnf_formula)
         
         # Reorder variables
-        variable_order = self.bdd.vars 
-        var = self.bdd.var_at_level(0)
-        level = self.root.level
-        variable_order[self.root.var] = 0
-        variable_order[var] = level
-        self.bdd.reorder(variable_order)
-
+        # variable_order = self.bdd.vars 
+        # var = self.bdd.var_at_level(0)
+        # level = self.root.level
+        # variable_order[self.root.var] = 0
+        # variable_order[var] = level
+        # self.bdd.reorder(variable_order)
 
         #self.root = self.bdd.var(self.bdd.var_at_level(0))
         
@@ -63,30 +62,30 @@ class BDDModel:
     def is_terminal_node(self, node: Function) -> bool:
         return node.var is None    
 
-    def traverse(self):
-        root = self.root
-        self.mark = defaultdict(bool)
-        self._traverse(root)
+    # def traverse(self):
+    #     root = self.root
+    #     self.mark = defaultdict(bool)
+    #     self._traverse(root)
 
-    def _traverse(self, n):
-        print('-----')
-        print(f'n: {n} (var={n.var}), (level={n.level}), (id={n.node}), (negated={n.negated})')
+    # def _traverse(self, n):
+    #     print('-----')
+    #     print(f'n: {n} (var={n.var}), (level={n.level}), (id={n.node}), (negated={n.negated})')
 
-        self.mark[n.node] = not self.mark[n.node]
-        if not self.is_terminal_node(n):
+    #     self.mark[n.node] = not self.mark[n.node]
+    #     if not self.is_terminal_node(n):
 
-            #level, low, high = self.bdd.succ(n)
-            level = n.level
-            low = n.low #self.get_low_node(n)
-            high = n.high #self.get_high_node(n)
-            print(f'|--level: {level}')
-            print(f'|--low: {low} (var={low.var}), (level={low.level}), (id={low.node}), (negated={low.negated})')
-            print(f'|--high: {high} (var={high.var}), (level={high.level}), (id={high.node}), (negated={high.negated})')
-            if self.is_terminal_node(low) and low.negated:
-                print(f'negated: {~low}')
-            print('-----')
+    #         #level, low, high = self.bdd.succ(n)
+    #         level = n.level
+    #         low = n.low #self.get_low_node(n)
+    #         high = n.high #self.get_high_node(n)
+    #         print(f'|--level: {level}')
+    #         print(f'|--low: {low} (var={low.var}), (level={low.level}), (id={low.node}), (negated={low.negated})')
+    #         print(f'|--high: {high} (var={high.var}), (level={high.level}), (id={high.node}), (negated={high.negated})')
+    #         if self.is_terminal_node(low) and low.negated:
+    #             print(f'negated: {~low}')
+    #         print('-----')
 
-            if self.mark[n.node] != self.mark[low.node]:
-                self._traverse(low)
-            if self.mark[n.node] != self.mark[high.node]:
-                self._traverse(high)
+    #         if self.mark[n.node] != self.mark[low.node]:
+    #             self._traverse(low)
+    #         if self.mark[n.node] != self.mark[high.node]:
+    #             self._traverse(high)
