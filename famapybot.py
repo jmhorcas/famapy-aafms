@@ -4,12 +4,19 @@ import requests
 
 import telebot 
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+from famapy.metamodels.pysat_metamodel.transformations.fm_to_pysat import FmToPysat
+from famapy.metamodels.cnf_metamodel.transformations.pysat_to_cnf import PysatToCNF
+from famapy.metamodels.bdd_metamodel.transformations.cnf_to_bdd import CNFToBDD
 from famapy.metamodels.fm_metamodel.transformations.featureide_parser import FeatureIDEParser
 from famapy.metamodels.fm_metamodel.operations.metrics import Metrics
 from famapy.metamodels.fm_metamodel.operations import get_core_features, average_branching_factor, max_depth_tree, count_configurations
+from famapy.metamodels.bdd_metamodel.operations.fm_operations import BDDProductDistributionBF
 
 
-HTTP_API_TOKEN = ''
+HTTP_API_TOKEN = '1865270990:AAHuKC7Kjqjr-wpIbJRDZOvi4vrsrUDOU8Y'
 
 
 def int_to_scientific_notation(n: int, precision: int = 2) -> str:
@@ -48,6 +55,49 @@ def analyze_model(file_name: str) -> str:
     return response
 
 
+def get_product_distribution(file_name):
+    # Convert the model to BDD
+    fm = FeatureIDEParser(file_name).transform() 
+    pysat_model = FmToPysat(fm).transform()
+    cnf_model = PysatToCNF(pysat_model).transform()
+    bdd_model = CNFToBDD(cnf_model).transform()
+
+    # BDD product distribution
+    dist = BDDProductDistributionBF(fm).execute(bdd_model).get_result()
+    print(f'Product Distribution: {dist}')
+
+    # Create data
+    x = range(len(fm.get_features())+1)
+    y = dist
+
+    # Plot
+    plt.title("Product distribution")
+    plt.xlabel("#Features")
+    plt.ylabel("#Products")
+    plt.plot(x, y, color='black')  # line plot
+    plt.fill_between(x, y, color='grey')  # area plot
+    plt.legend(loc="best")
+    #plt.show()
+    image_filename = 'pd_temp.png'
+    plt.savefig(image_filename)
+
+    # from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+    # from matplotlib.figure import Figure
+
+    # fig = Figure()
+    # canvas = FigureCanvas(fig)
+    # ax = fig.gca()
+
+    # ax.text(0.0,0.0,"Test", fontsize=45)
+    # ax.axis('off')
+
+    # canvas.draw()       # draw the canvas, cache the renderer
+
+    # image = np.fromstring(canvas.tostring_rgb(), dtype='uint8')
+
+    return image_filename
+
+
 if __name__ == "__main__":
     logging.basicConfig(filename='famapybot.log', filemode='a+', level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',)
     logging.info("FaMaPyBot is running...")
@@ -69,11 +119,17 @@ if __name__ == "__main__":
                 file.write(content.text)
 
             response = analyze_model(file_name)
+            pd_image_filename = get_product_distribution(file_name)
+            
+            #bot.reply_to(message, response)
+            photo = open(pd_image_filename, 'rb')
+            bot.send_photo(chat_id=message.chat.id, photo=photo, caption=response, reply_to_message_id=message.id)
 
             if os.path.exists(file_name):
                 os.remove(file_name)      
-            
-            bot.reply_to(message, response)
+            if os.path.exists(pd_image_filename):
+                os.remove(pd_image_filename)      
+
             #bot.reply_to(message, "Error processing the file.")
         else:
             bot.reply_to(message, "Error getting the file.")
