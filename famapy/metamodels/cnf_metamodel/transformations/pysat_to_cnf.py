@@ -24,7 +24,7 @@ class PysatToCNF(ModelToModel):
         or_connective = ' ' + self.cnf_notation.value[CNFLogicConnective.OR] + ' '
         and_connective = ' ' + self.cnf_notation.value[CNFLogicConnective.AND] + ' '
         cnf_list = []
-        for clause in self.source_model.cnf.clauses:
+        for clause in self.source_model.get_all_clauses():
             cnf_list.append('(' + or_connective.join(list(map(lambda l: 
                 not_connective + self.source_model.features[abs(l)] if l < 0 else 
                 self.source_model.features[abs(l)], clause))) + ')')

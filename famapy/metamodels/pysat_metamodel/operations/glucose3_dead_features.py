@@ -1,3 +1,5 @@
+from typing import Any
+
 from pysat.solvers import Glucose3
 
 from famapy.core.operations import DeadFeatures
@@ -6,18 +8,19 @@ from famapy.metamodels.pysat_metamodel.models.pysat_model import PySATModel
 
 class Glucose3DeadFeatures(DeadFeatures):
 
-    def __init__(self):
-        self.dead_features = []
+    def __init__(self) -> None:
+        self.dead_features: list[list[Any]] = []
 
-    def get_dead_features(self):
+    def get_dead_features(self) -> list[list[Any]]:
         return self.dead_features
 
-    def get_result(self):
+    def get_result(self) -> list[list[Any]]:
         return self.get_dead_features()
 
     def execute(self, model: PySATModel) -> 'Glucose3DeadFeatures':
         glucose = Glucose3()
-        for clause in model.cnf:  # AC es conjunto de conjuntos
+
+        for clause in model.get_all_clauses():  # AC es conjunto de conjuntos
             glucose.add_clause(clause)  # añadimos la constraint
 
         dead_features = []

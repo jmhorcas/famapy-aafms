@@ -2,27 +2,29 @@ from pysat.solvers import Glucose3
 
 from famapy.core.operations import ValidConfiguration
 from famapy.core.models import Configuration
+
 from famapy.metamodels.pysat_metamodel.models.pysat_model import PySATModel
 
 
 class Glucose3ValidConfiguration(ValidConfiguration):
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.result = False
-        self.configuration = None
+        self.configuration = Configuration({})
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         return self.result
 
-    def get_result(self):
+    def get_result(self) -> bool:
         return self.is_valid()
 
-    def set_configuration(self, configuration: Configuration):
+    def set_configuration(self, configuration: Configuration) -> None:
         self.configuration = configuration
 
     def execute(self, model: PySATModel) -> 'Glucose3ValidConfiguration':
         glucose = Glucose3()
-        for clause in model.cnf:  # AC es conjunto de conjuntos
+
+        for clause in model.get_all_clauses():  # AC es conjunto de conjuntos
             glucose.add_clause(clause)  # añadimos la constraint
 
         assumptions = []

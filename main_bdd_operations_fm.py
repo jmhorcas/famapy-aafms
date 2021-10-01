@@ -19,7 +19,7 @@ PIZZA_FM_CNF_SHORT = INPUT_CNFS + 'pizza_cnf_short.txt'
 PIZZA_FM_CNF_JAVA = INPUT_CNFS + 'pizza_cnf_java.txt'
 PIZZA_FM_CNF_LOGIC = INPUT_CNFS + 'pizza_cnf_logic.txt'
 PIZZA_FM_CNF_TEXTUAL = INPUT_CNFS + 'pizza_cnf_textual.txt'
-SIMPLE_EXAMPLE = INPUT_CNFS + 'simple_example.txt'
+SIMPLE_EXAMPLE = INPUT_CNFS + 'pizza_cnf_short.txt'
 
 
 def main():
@@ -27,7 +27,7 @@ def main():
     fm = FeatureIDEParser(PIZZA_FM).transform() 
 
     # Load the CNF model from a CNF formula
-    cnf_model = CNFReader(PIZZA_FM_CNF_LOGIC).transform()
+    cnf_model = CNFReader(SIMPLE_EXAMPLE).transform()
 
     # Create the BDD model from the CNF model
     bdd_model = CNFToBDD(cnf_model).transform()

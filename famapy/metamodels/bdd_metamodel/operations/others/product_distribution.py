@@ -59,7 +59,7 @@ class ProductDistribution(Operation):
         if n.var is not None:
             low = n.low
             high = n.high
-            if low.negated:
+            if low.var is not None and low.negated:
                 low = ~ low 
             # if low.var is not None:
             #     if low.negated:

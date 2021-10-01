@@ -1,11 +1,11 @@
-from famapy.core.operations import NumberOfConfigurations
+from famapy.core.operations import ProductsNumber
 
 from famapy.metamodels.fm_metamodel.models import FeatureModel, FMConfiguration
 
 from famapy.metamodels.bdd_metamodel.models import BDDModel
 
 
-class BDDNumberOfConfigurations(NumberOfConfigurations):
+class BDDNumberOfConfigurations(ProductsNumber):
     """It computes the number of configurations of the feature model using its BDD representation.
     
     It also supports counting the configurations from a given partial configuration.
@@ -35,3 +35,6 @@ class BDDNumberOfConfigurations(NumberOfConfigurations):
             n_vars = len(self.bdd_model.variables) - len(values)
         
         return self.bdd_model.bdd.count(u, nvars=n_vars)
+    
+    def get_products_number(self) -> int:
+        return self.get_number_of_configurations()

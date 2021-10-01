@@ -26,8 +26,10 @@ class Operations(UserList[Type[Operation]]):  # pylint: disable=too-many-ancesto
     data: list[Type[Operation]]
 
     def search_by_name(self, name: str) -> Type[Operation]:
-        # This has been modified to use the parent class name
-        candidates = filter(lambda op: op.__bases__[0].__name__ == name, self.data)
+        candidates = filter(
+            lambda op: name in [op.__name__, op.__base__.__name__],
+            self.data
+        )
 
         try:
             operation = next(candidates, None)

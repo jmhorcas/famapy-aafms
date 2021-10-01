@@ -1,10 +1,10 @@
 from famapy.core.models import Configuration
-from famapy.core.operations import NumberOfConfigurations
+from famapy.core.operations import ProductsNumber
 
 from famapy.metamodels.bdd_metamodel.models.bdd_model import BDDModel
 
 
-class BDDNumberOfConfigurations(NumberOfConfigurations):
+class BDDNumberOfConfigurations(ProductsNumber):
     """It computes the number of solutions of the BDD model.
     
     It also supports counting the solutions from a given partial configuration.
@@ -33,3 +33,6 @@ class BDDNumberOfConfigurations(NumberOfConfigurations):
             n_vars = len(self.bdd_model.variables) - len(values)
         
         return self.bdd_model.bdd.count(u, nvars=n_vars)
+
+    def get_products_number(self) -> int:
+        return self.get_number_of_configurations()

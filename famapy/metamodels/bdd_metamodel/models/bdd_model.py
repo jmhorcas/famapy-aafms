@@ -40,7 +40,7 @@ class BDDModel:
         # variable_order[var] = level
         # self.bdd.reorder(variable_order)
 
-        #self.root = self.bdd.var(self.bdd.var_at_level(0))
+        # self.root = self.bdd.var(self.bdd.var_at_level(0))
         
     def index(self, n: Function) -> int:
         """Position of the variable that labels the node `n` in the ordering (i.e., the level).

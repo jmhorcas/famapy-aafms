@@ -1,12 +1,12 @@
 from typing import Optional
 import math
 
-from famapy.core.operations import NumberOfConfigurations
+from famapy.core.operations import ProductsNumber
 
 from famapy.metamodels.fm_metamodel.models import FeatureModel, Feature, FMConfiguration
 
 
-class FMNumberOfConfigurations(NumberOfConfigurations):
+class FMNumberOfConfigurations(ProductsNumber):
     """It computes the number of configurations of the feature model.
 
     It only uses the structure of the feature model, 
@@ -29,6 +29,10 @@ class FMNumberOfConfigurations(NumberOfConfigurations):
 
     def get_number_of_configurations(self, partial_configuration: Optional[FMConfiguration] = None) -> int:
         return count_configurations(self.feature_model, partial_configuration)
+    
+    def get_products_number(self) -> int:
+        return self.get_number_of_configurations()
+        
 
 def count_configurations(feature_model: FeatureModel, partial_configuration: Optional[FMConfiguration] = None) -> int:
     return count_configurations_rec(feature_model.root)

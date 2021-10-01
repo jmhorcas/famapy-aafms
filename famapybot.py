@@ -1,6 +1,7 @@
 import os
 import logging 
 import requests
+import multiprocessing
 
 import telebot 
 
@@ -13,10 +14,11 @@ from famapy.metamodels.bdd_metamodel.transformations.cnf_to_bdd import CNFToBDD
 from famapy.metamodels.fm_metamodel.transformations.featureide_parser import FeatureIDEParser
 from famapy.metamodels.fm_metamodel.operations.metrics import Metrics
 from famapy.metamodels.fm_metamodel.operations import get_core_features, average_branching_factor, max_depth_tree, count_configurations
-from famapy.metamodels.bdd_metamodel.operations.fm_operations import BDDProductDistributionBF
+from famapy.metamodels.bdd_metamodel.operations.fm_operations import BDDProductDistributionBF, BDDNumberOfConfigurations
+from famapy.metamodels.pysat_metamodel.operations.glucose3_products import Glucose3Products
 
 
-HTTP_API_TOKEN = ''
+HTTP_API_TOKEN = '1865270990:AAHuKC7Kjqjr-wpIbJRDZOvi4vrsrUDOU8Y'
 
 
 def int_to_scientific_notation(n: int, precision: int = 2) -> str:
@@ -62,6 +64,23 @@ def get_product_distribution(file_name):
     cnf_model = PysatToCNF(pysat_model).transform()
     bdd_model = CNFToBDD(cnf_model).transform()
 
+    print(cnf_model.get_cnf_formula())
+    print("--------------------------")
+    print(pysat_model.get_all_clauses())
+    print(pysat_model.features)
+    cnf_formula = []
+    for c in pysat_model.get_all_clauses():
+        cnf_formula.append(list(map(lambda l: 'Not ' + pysat_model.features[abs(l)] if l < 0 else pysat_model.features[abs(l)], c)))
+    print(cnf_formula)
+
+    # PYSAT number of solutions
+    nof_solutions = len(Glucose3Products().execute(pysat_model).get_result())
+    print(f'#Solutions: {nof_solutions}')
+
+    # BDD number of solutions
+    nof_solutions = BDDNumberOfConfigurations(fm).execute(bdd_model).get_result()
+    print(f'#Solutions: {nof_solutions}')
+
     # BDD product distribution
     dist = BDDProductDistributionBF(fm).execute(bdd_model).get_result()
     print(f'Product Distribution: {dist}')
@@ -94,7 +113,6 @@ def get_product_distribution(file_name):
     # canvas.draw()       # draw the canvas, cache the renderer
 
     # image = np.fromstring(canvas.tostring_rgb(), dtype='uint8')
-
     return image_filename
 
 
