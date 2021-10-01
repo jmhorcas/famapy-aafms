@@ -16,7 +16,7 @@ from famapy.metamodels.fm_metamodel.operations import get_core_features, average
 from famapy.metamodels.bdd_metamodel.operations.fm_operations import BDDProductDistributionBF
 
 
-HTTP_API_TOKEN = '1865270990:AAHuKC7Kjqjr-wpIbJRDZOvi4vrsrUDOU8Y'
+HTTP_API_TOKEN = ''
 
 
 def int_to_scientific_notation(n: int, precision: int = 2) -> str:
