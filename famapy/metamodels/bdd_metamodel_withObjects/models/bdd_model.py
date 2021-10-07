@@ -1,33 +1,28 @@
+from collections import defaultdict
 from dd.autoref import BDD, Function
 
-from famapy.core.models import VariabilityModel
-
-from famapy.metamodels.bdd_metamodel.models.utils.txtcnf import TextCNFNotation, CNFLogicConnective
+from famapy.metamodels.cnf_metamodel.models.cnf_model import CNFNotation, CNFLogicConnective
 
 
-class BDDModel(VariabilityModel):
+class BDDModel:
     """A Binary Decision Diagram (BDD) representation of the feature model given as a CNF formula.
 
     It relies on the dd module: https://pypi.org/project/dd/
     """
 
-    CNF_NOTATION = TextCNFNotation.JAVA_SHORT
+    CNF_NOTATION = CNFNotation.JAVA_SHORT
     NOT = CNF_NOTATION.value[CNFLogicConnective.NOT]
     AND = CNF_NOTATION.value[CNFLogicConnective.AND]
     OR = CNF_NOTATION.value[CNFLogicConnective.OR]
-    
-    @staticmethod
-    def get_extension() -> str:
-        return 'bdd'
 
     def __init__(self):
         self.bdd = BDD()  # BDD manager
-        self.textual_cnf_formula = None
+        self.cnf_formula = None
         self.root = None
         self.variables = []
 
-    def from_textual_cnf(self, textual_cnf_formula: str, variables: list[str]):
-        self.cnf_formula = textual_cnf_formula
+    def from_cnf(self, cnf_formula: str, variables: list[str]):
+        self.cnf_formula = cnf_formula
         self.variables = variables
 
         # Declare variables
@@ -57,15 +52,40 @@ class BDDModel(VariabilityModel):
             return len(self.bdd.vars) + 1
         else:
             return n.level + 1
-    
+
+    def get_high_node(self, node: Function) -> Function:
+        return ~node.high if node.negated and not self.is_terminal_node(node.high) else node.high
+
+    def get_low_node(self, node: Function) -> Function:
+        return ~node.low if node.negated and not self.is_terminal_node(node.low) else node.low
+
     def is_terminal_node(self, node: Function) -> bool:
         return node.var is None    
 
-    def get_high_node(self, node: Function) -> Function:
-        # TODO: check!!!
-        return node.high
+    # def traverse(self):
+    #     root = self.root
+    #     self.mark = defaultdict(bool)
+    #     self._traverse(root)
 
-    def get_low_node(self, node: Function) -> Function:
-        # TODO: check!!!
-        return ~node.low if node.negated and not self.is_terminal_node(node.low) else node.low
-        
+    # def _traverse(self, n):
+    #     print('-----')
+    #     print(f'n: {n} (var={n.var}), (level={n.level}), (id={n.node}), (negated={n.negated})')
+
+    #     self.mark[n.node] = not self.mark[n.node]
+    #     if not self.is_terminal_node(n):
+
+    #         #level, low, high = self.bdd.succ(n)
+    #         level = n.level
+    #         low = n.low #self.get_low_node(n)
+    #         high = n.high #self.get_high_node(n)
+    #         print(f'|--level: {level}')
+    #         print(f'|--low: {low} (var={low.var}), (level={low.level}), (id={low.node}), (negated={low.negated})')
+    #         print(f'|--high: {high} (var={high.var}), (level={high.level}), (id={high.node}), (negated={high.negated})')
+    #         if self.is_terminal_node(low) and low.negated:
+    #             print(f'negated: {~low}')
+    #         print('-----')
+
+    #         if self.mark[n.node] != self.mark[low.node]:
+    #             self._traverse(low)
+    #         if self.mark[n.node] != self.mark[high.node]:
+    #             self._traverse(high)

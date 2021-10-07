@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from famapy.metamodels.fm_metamodel.transformations import FeatureIDEParser
+from famapy.metamodels.fm_metamodel.transformations.featureide_parser import FeatureIDEParser
 
 from famapy.metamodels.cnf_metamodel.transformations.cnf_reader import CNFReader
 
@@ -9,10 +9,11 @@ from famapy.metamodels.bdd_metamodel.transformations.cnf_to_bdd import CNFToBDD
 from famapy.metamodels.bdd_metamodel.operations.fm_operations import BDDProducts, BDDNumberOfConfigurations, BDDProductDistributionBF, BDDFeatureInclusionProbabilitlyBF, BDDSampling
 from famapy.metamodels.pysat_metamodel.transformations.fm_to_pysat import FmToPysat
 from famapy.metamodels.cnf_metamodel.transformations.pysat_to_cnf import PysatToCNF
+from famapy.metamodels.pysat_metamodel.operations.glucose3_products_number import Glucose3ProductsNumber
 
 # Models in FeatureIDE format for testing
 INPUT_FMS = 'input_fms/FeatureIDE_models/'
-PIZZA_FM = INPUT_FMS + 'pizzas.xml'
+PIZZA_FM = INPUT_FMS + 'jHipster.xml'
 
 # Models in CNF for testing (the same model in different CNF syntax notation)
 INPUT_CNFS = 'input_fms/cnf_models/'
@@ -30,6 +31,11 @@ def main():
     pysat_model = FmToPysat(fm).transform()
     cnf_model = PysatToCNF(pysat_model).transform()
     bdd_model = CNFToBDD(cnf_model).transform()
+
+
+    # Pysat product number
+    pn = Glucose3ProductsNumber().execute(pysat_model).get_result()
+    print(f'Product numbers: {pn}')
 
     # BDD product distribution
     dist = BDDProductDistributionBF(fm).execute(bdd_model).get_result()

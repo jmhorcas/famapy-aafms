@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from famapy.metamodels.fm_metamodel.transformations import FeatureIDEParser
+from famapy.metamodels.fm_metamodel.transformations.featureide_parser import FeatureIDEParser
 
 from famapy.metamodels.cnf_metamodel.transformations.cnf_reader import CNFReader
 
@@ -94,10 +94,10 @@ def main():
 
     # BDD product distribution
     dist = PDist().execute(bdd_model).get_result()
-    print(f'Product Distribution: {dist}')
+    print(f'Product Distribution 2: {dist}')
 
     dist = ProductDistribution().execute(bdd_model).get_result()
-    print(f'Product Distribution: {dist}')
+    print(f'Product Distribution 3: {dist}')
 
 if __name__ == "__main__":
     main()

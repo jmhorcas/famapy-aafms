@@ -1,10 +1,10 @@
 import random 
 
 from famapy.core.models import Configuration
-from famapy.core.operations import Sampling
+from famapy.core.operations.sampling import Sampling
 
 from famapy.metamodels.bdd_metamodel.models import BDDModel
-from famapy.metamodels.bdd_metamodel.operations import BDDProductsNumber
+from famapy.metamodels.bdd_metamodel.operations import BDDNumberOfConfigurations
 
 
 class BDDSampling(Sampling):
@@ -16,12 +16,10 @@ class BDDSampling(Sampling):
     Empirical Software Engineering]
     which relies on counting-based sampling inspired in the original Knuth algorithm.
 
-    This implementation supports samples with and without replacement,
-    as well as samples from a given partial configuration.
+    This implementation supports samples with and without replacement as well as samples from a given partial configuration.
     """
 
-    def __init__(self, size: int, with_replacement: bool=False, 
-                 partial_configuration: Configuration=None) -> None:
+    def __init__(self, size: int, with_replacement: bool=False, partial_configuration: Configuration=None) -> None:
         self.result = []
         self.bdd_model = None
         self.size = size 
@@ -36,9 +34,8 @@ class BDDSampling(Sampling):
     def get_result(self) -> list[Configuration]:
         return self.result
 
-    def sample(self, size: int, with_replacement: bool=False, 
-               partial_configuration: Configuration=None) -> list[Configuration]:
-        nof_configs = BDDProductsNumber(partial_configuration).execute(self.bdd_model).get_result()
+    def sample(self, size: int, with_replacement: bool=False, partial_configuration: Configuration=None) -> list[Configuration]:
+        nof_configs = BDDNumberOfConfigurations(partial_configuration).execute(self.bdd_model).get_result()
         if size < 0 or (size > nof_configs and not with_replacement):
             raise ValueError('Sample larger than population or is negative.')
 
@@ -57,8 +54,7 @@ class BDDSampling(Sampling):
 
     def get_random_configuration(self, partial_configuration: Configuration=None) -> Configuration:
         # Initialize the configurations and values for BDD nodes with already known features
-        values = {} if partial_configuration is None else (
-                {f: selected for f, selected in partial_configuration.elements.items()})
+        values = {} if partial_configuration is None else {f: selected for f, selected in partial_configuration.elements.items()}
 
         # Set the BDD nodes with the already known features values
         u = self.bdd_model.bdd.let(values, self.bdd_model.root)
@@ -74,9 +70,7 @@ class BDDSampling(Sampling):
             nof_configs_var_unselected = self.bdd_model.bdd.count(v_unsel, nvars=n_vars-1)
 
             # Randomly select or not the feature
-            selected = random.choices([True, False], 
-                                      [nof_configs_var_selected, nof_configs_var_unselected], 
-                                      k=1)[0]
+            selected = random.choices([True, False], [nof_configs_var_selected, nof_configs_var_unselected], k=1)[0]
 
             # Update configuration and BDD node for the new feature
             values[feature] = selected
@@ -84,3 +78,4 @@ class BDDSampling(Sampling):
                 
             n_vars -= 1
         return Configuration(values)
+

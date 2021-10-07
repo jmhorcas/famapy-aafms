@@ -1,18 +1,15 @@
 from famapy.core.models import Configuration
 
 from famapy.metamodels.bdd_metamodel.models import BDDModel
-from famapy.metamodels.bdd_metamodel.operations.interfaces import ProductDistribution
-from famapy.metamodels.bdd_metamodel.operations import BDDProducts
+from famapy.metamodels.bdd_metamodel.operations import ProductDistribution, BDDProducts
 
 
 class BDDProductDistributionBF(ProductDistribution):
-    """The Product Distribution (PD) algorithm determines the number of solutions 
-    having a given number of variables.
+    """The Product Distribution (PD) algorithm determines the number of solutions having a given number of variables.
 
     This is a brute-force implementation that enumerates all solutions for accounting them.
 
-    Ref.: [Heradio et al. 2019. Supporting the Statistical Analysis of Variability Models. SPLC. 
-    (https://doi.org/10.1109/ICSE.2019.00091)]
+    Ref.: [Heradio et al. 2019. Supporting the Statistical Analysis of Variability Models. SPLC. (https://doi.org/10.1109/ICSE.2019.00091)]
     """
 
     def __init__(self, partial_configuration: Configuration=None) -> None:

@@ -15,7 +15,6 @@ class BDDDumpFormat(Enum):
     PNG = 'png'
     SVG = 'svg'
 
-
 class BDDWriter(ModelToText):
     """Create the dump file representing the argument BDD.
     
@@ -31,8 +30,7 @@ class BDDWriter(ModelToText):
     def get_destination_extension() -> str:
         return BDDDumpFormat.DDDMPv3
 
-    def __init__(self, path: str, source_model: BDDModel, roots: list[Function]=None, 
-                 output_format: BDDDumpFormat=BDDDumpFormat.DDDMPv3) -> None:
+    def __init__(self, path: str, source_model: BDDModel, roots: list[Function]=None, output_format: BDDDumpFormat=BDDDumpFormat.DDDMPv3) -> None:
         self._path = path
         self._source_model = source_model
         self._output_format = output_format
@@ -50,7 +48,6 @@ class BDDWriter(ModelToText):
              # Convert to dddmp format version 3.0 (adding the '.varnames' field)
             dddmp_v2_to_v3(self._path)
         return None
-
 
 def dddmp_v2_to_v3(filepath: str):
     """Convert the file with the BDD dump in format dddmp version 2 to version 3.
