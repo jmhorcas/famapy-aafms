@@ -27,6 +27,9 @@ def main():
     for i, ctc in enumerate(fm.get_constraints()):
         print(f'CTC {i}: {ctc.ast.to_cnf()}')
 
+    ctc11 = fm.get_constraints()[11]
+    print(f'CTC 11: {ctc11.ast}')
+    print(f'CTC 11 cnf: {ctc11.ast.to_cnf()}')
     # Create the BDD from the FM
     bdd_model = FmToBDD(fm).transform()
 

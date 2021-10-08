@@ -88,9 +88,7 @@ def convert_into_cnf(ast: AST) -> AST:
       3. Distribute ORs invwards over ANDs, applying the Distribute property.
     """
     #print(f'Before: {ast}')
-    completed = False
-    while not completed:
-        (ast, completed) = eliminate_complex_operators(ast)
+    ast = eliminate_complex_operators(ast)
     #print(f'eliminate_complex_operators: {ast}')
     completed = False
     while not completed:
@@ -121,27 +119,22 @@ def eliminate_exclusion(node: Node) -> Node:
     right = AST.create_unary_operation(ASTOperation.NOT, node.right).root
     return AST.create_binary_operation(ASTOperation.OR, left, right).root 
 
-def eliminate_complex_operators(ast: AST) -> tuple[AST,bool]:
+def eliminate_complex_operators(ast: AST) -> AST:
     """Eliminate imlications, equivalences, and excludes"""
     node = ast.root
     stack = []
     stack.append(node)
     new_root = None
-    found_any = False
     while stack:
         n = stack.pop()
-        #print(f'Node: {n} - {n.is_op()}, {n.data}')
         if n is not None and n.is_op():
             new_node = None
             if n.data == ASTOperation.REQUIRES or n.data == ASTOperation.IMPLIES:
                 new_node = eliminate_implication(n)
-                found_any = True
             elif n.data == ASTOperation.EQUIVALENCE:
                 new_node = eliminate_implication(n)
-                found_any = True
             elif n.data == ASTOperation.EXCLUDES:
                 new_node = eliminate_exclusion(n)
-                found_any = True
             elif n.data == ASTOperation.NOT:
                 stack.append(n.left)
             else:  # OR, AND nodes
@@ -157,7 +150,7 @@ def eliminate_complex_operators(ast: AST) -> tuple[AST,bool]:
                     new_root = new_node
                 else:
                     new_root = n
-    return (AST(new_root), not found_any)
+    return AST(new_root)
 
 def apply_demorganlaw(node: Node, operation: ASTOperation) -> Node:
     """Apply De Morgan's Law.
@@ -184,6 +177,7 @@ def move_nots_inwards(ast: AST) -> tuple[AST,bool]:
         if n is not None and n.is_op():
             new_node = None
             if n.data == ASTOperation.NOT:
+                print(f'Node: {n} - {n.is_op()}, {n.data}')
                 if n.left.is_op():
                     if n.left.data == ASTOperation.OR:
                         new_node = apply_demorganlaw(ASTOperation.AND, n)
@@ -199,15 +193,18 @@ def move_nots_inwards(ast: AST) -> tuple[AST,bool]:
                         stack.append(n.left)
                         stack.append(n.right)
 
-            if new_node is not None:
-                stack.append(new_node.left)
-                stack.append(new_node.right)
+                if new_node is not None:
+                    stack.append(new_node.left)
+                    stack.append(new_node.right)
             
             if new_root is None:
                 if new_node is not None:
                     new_root = new_node
                 else:
                     new_root = n
+                    #stack.append(n.left)
+                    #stack.append(n.right)
+
     return (AST(new_root), not found_any)
 
 def apply_distribution(node: Node, and_node: Node) -> Node:
@@ -238,6 +235,7 @@ def distribute_ors(ast: AST) -> tuple[AST,bool]:
                         found_any = True
                     elif n.left.data == ASTOperation.NOT and n.left.left.data == ASTOperation.AND:
                         # Cuidado aquí, falta hacer la distributiva cuando hay negaciones.
+                        pass
                     elif n.right.data == ASTOperation.AND:
                         new_node = apply_distribution(n, n.right) 
                         found_any = True
@@ -254,4 +252,9 @@ def distribute_ors(ast: AST) -> tuple[AST,bool]:
                     new_root = new_node
                 else:
                     new_root = n
+                    #stack.append(n.left)
+                    #stack.append(n.right)
+            
+            # el problema está en que tengo que añadir al stack los n.left y n.right en caso de que la operación no sea un OR.
+
     return (AST(new_root), not found_any)
