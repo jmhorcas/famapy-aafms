@@ -9,6 +9,7 @@ from famapy.metamodels.bdd_metamodel.transformations.fm_to_bdd import FmToBDD
 # Models in FeatureIDE format for testing
 INPUT_FMS = 'input_fms/FeatureIDE_models/'
 PIZZA_FM = INPUT_FMS + 'pizzas.xml'
+JHIPSTER_FM = INPUT_FMS + 'jHipster.xml'
 
 # Models in CNF for testing (the same model in different CNF syntax notation)
 INPUT_CNFS = 'input_fms/cnf_models/'
@@ -20,7 +21,11 @@ PIZZA_FM_CNF_TEXTUAL = INPUT_CNFS + 'pizza_cnf_textual.txt'
 
 def main():
     # Load the feature model from FeatureIDE
-    fm = FeatureIDEParser(PIZZA_FM).transform() 
+    fm = FeatureIDEParser(JHIPSTER_FM).transform() 
+
+    print(fm)
+    for i, ctc in enumerate(fm.get_constraints()):
+        print(f'CTC {i}: {ctc.ast.to_cnf()}')
 
     # Create the BDD from the FM
     bdd_model = FmToBDD(fm).transform()
