@@ -24,12 +24,14 @@ def main():
     fm = FeatureIDEParser(JHIPSTER_FM).transform() 
 
     print(fm)
-    for i, ctc in enumerate(fm.get_constraints()):
-        print(f'CTC {i}: {ctc.ast.to_cnf()}')
+    #for i, ctc in enumerate(fm.get_constraints()):
+    #    print(f'CTC {i}: {ctc.ast.to_cnf()}')
 
-    ctc11 = fm.get_constraints()[11]
+    ctc11 = fm.get_constraints()[1]
     print(f'CTC 11: {ctc11.ast}')
     print(f'CTC 11 cnf: {ctc11.ast.to_cnf()}')
+    print(f'CTC 11 clauses: {ctc11.ast.get_clauses()}')
+    #raise Exception
     # Create the BDD from the FM
     bdd_model = FmToBDD(fm).transform()
 
@@ -49,15 +51,16 @@ def main():
     bdd_writer.transform()
 
     # BDD Solutions operation
-    solutions = BDDProducts().execute(bdd_model).get_result()
-    for i, sol in enumerate(solutions):
-        print(f'Sol. {i}: {[f for f in sol.elements if sol.elements[f]]}')
+    # solutions = BDDProducts().execute(bdd_model).get_result()
+    # for i, sol in enumerate(solutions):
+    #     print(f'Sol. {i}: {[f for f in sol.elements if sol.elements[f]]}')
 
     # BDD number of solutions
     nof_solutions = BDDProductsNumber().execute(bdd_model).get_result()
     print(f'#Solutions: {nof_solutions}')
 
-    assert len(solutions) == nof_solutions 
+    # assert len(solutions) == nof_solutions 
+    raise Exception
 
     # BDD product distribution
     dist = BDDProductDistributionBF().execute(bdd_model).get_result()
